@@ -1,0 +1,54 @@
+# Variables
+CONFIG="$HOME/.config"
+
+# Dotfiles Repo
+alias dotfiles='$(which git) --git-dir=$HOME/.df --work-tree=$HOME'
+
+# Base
+case "$(uname)" in
+    Linux) alias ls='ls --color';;
+    Darwin) alias ls='ls -G';;
+esac
+alias la='ls -A'
+alias ll='ls -l'
+alias lla='ls -lA'
+alias cp='cp -v'
+alias mv='mv -v'
+alias rm='rm -v'
+alias ln='ln -iv'
+
+alias shred='shred -fvuzn 35'
+alias off='sudo shutdown now'
+alias reboot='sudo shutdown -r now'
+
+# Docker
+[[ "$(uname)" == "Linux" ]] && alias docker='podman'
+alias d='docker'
+alias dps='docker ps -a'
+alias dex='docker exec -it'
+alias di='docker images'
+alias drm='docker rm $(docker ps -aqf status=exited)'
+alias drmi='docker rmi -f'
+alias drun='docker run --rm'
+alias druni='docker run --rm -it'
+alias drund='docker run --rm -d'
+alias dstart='docker start'
+alias dstop='docker stop'
+alias dalias='alias | grep ^docker'
+dbash() { docker exec -it $1 bash; }
+
+# Docker-Compose
+## Deprecated, to be removed in future
+alias dc='docker-compose'
+alias dcup='dc up'
+alias dcdn='dc down'
+
+# Git
+# https://www.gitignore.io/api/$1
+gi() { curl -sLw "\n" https://www.toptal.com/developers/gitignore/api/$1; }
+
+# Other
+alias notebook='sh $CONFIG/scripts/notebook.sh'
+
+porttest(){	curl portquiz.net:$1; }
+cheat() { curl cht.sh/$1; }

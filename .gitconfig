@@ -1,0 +1,38 @@
+[user]
+	name = Teo Wei Shen
+	email = tws4793@gmail.com
+
+[alias]
+	alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
+	a = add
+	aa = add .
+    ap = add --patch
+	b = branch
+	c = commit
+	cl = clone
+	cm = commit -m
+	co = checkout
+	d = diff
+	m = merge
+	nope = checkout .
+	ps = push
+	pu = pull
+	r = remote
+	s = status
+	wait = reset HEAD
+	uc = reset --soft HEAD^
+
+[init]
+	defaultBranch = main
+
+[core]
+	editor = vim
+
+[color]
+	ui = true
+
+[pull]
+	rebase = true
+
+[rebase]
+	autoStash = true
