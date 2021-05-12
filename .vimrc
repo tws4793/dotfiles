@@ -65,6 +65,8 @@ call plug#begin('~/.vim/plugged')
 
     " Editing Specific
     Plug 'junegunn/vim-easy-align'
+
+    Plug 'editorconfig/editorconfig-vim'
 call plug#end()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
