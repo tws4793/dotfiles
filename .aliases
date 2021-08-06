@@ -18,8 +18,12 @@ alias rm='rm -v'
 alias ln='ln -iv'
 
 alias shred='shred -fvuzn 35'
+alias whereami='echo $PWD'
 alias off='sudo shutdown now'
 alias reboot='sudo shutdown -r now'
+
+# Git
+alias g='git'
 
 # Docker
 [[ "$(uname)" == "Linux" ]] && alias docker='podman'
@@ -32,23 +36,13 @@ alias drmi='docker rmi -f'
 alias drun='docker run --rm'
 alias druni='docker run --rm -it'
 alias drund='docker run --rm -d'
-alias dstart='docker start'
-alias dstop='docker stop'
 alias dalias='alias | grep ^docker'
+alias dc='docker compose'
 dbash() { docker exec -it $1 bash; }
-
-# Docker-Compose
-## Deprecated, to be removed in future
-alias dc='docker-compose'
-alias dcup='dc up'
-alias dcdn='dc down'
-
-# Git
-# https://www.gitignore.io/api/$1
-gi() { curl -sLw "\n" https://www.toptal.com/developers/gitignore/api/$1; }
 
 # Other
 alias notebook='sh $CONFIG/scripts/notebook.sh'
 
 porttest(){	curl portquiz.net:$1; }
 cheat() { curl cht.sh/$1; }
+ipaddress() { curl -4 ifconfig.co/$1; }
