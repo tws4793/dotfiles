@@ -10,17 +10,17 @@ zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:git:*' formats '%b:%8.8i'
 
 # Prompt
-custom_prompt() {
-    local current_time='%* '
-    local error_code='%(?..%F{red}%?%f )'
-    local pointer='%F{%(?.green.red)}>%f '
-    local current_info='%~ '
-    #local current_info='%n@%m %~ '
-    local new_line=$'\n'
-
-    echo "%B%F{8}$current_time$current_info\$vcs_info_msg_0_$new_line$pointer%f%b"
+prompt_detailed() {
+    local items=(
+        '%*'
+        '%F{%(!.red.green)}%n%f'
+        '%~'
+        \$vcs_info_msg_0_
+        '\n%F{%(?.green.red)}>%f'
+    )
+    echo "%B%F{8}$items %f%b"
 }
-PROMPT=$(custom_prompt)
+PROMPT=$(prompt_detailed)
 
 setopt hist_ignore_space
 
@@ -34,5 +34,7 @@ export PATH="/usr/local/opt/openjdk/bin:$PATH"
 # Completions
 autoload -Uz compinit
 [ "$(whoami)" = "tws" ] && compinit -i || compinit
+zstyle ':completion:*' menu select
 zstyle ':completion::complete:*' gain-privileges 1
+_comp_options+=(globdots)
 #ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=606060"

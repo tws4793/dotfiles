@@ -1,5 +1,5 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Basics
+" Basic Settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Compatibility
@@ -28,7 +28,6 @@ set nowritebackup
 " Search
 set hlsearch
 
-" Command Height
 set cmdheight=1
 
 set ruler
@@ -36,12 +35,6 @@ set ruler
 set updatetime=300
 
 set shortmess+=c
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Keybindings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" nnoremap <leader>sv :source $MYVIMRC<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugins
@@ -54,32 +47,48 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 end
 
 call plug#begin('~/.vim/plugged')
-    Plug 'tomasiser/vim-code-dark'
-    Plug 'neoclide/coc.nvim'
-    " Plug 'vim-airline/vim-airline'
+    "" Themes
     Plug 'itchyny/lightline.vim'
-    
-    " Git
+    Plug 'Jorengarenar/vim-darkness'
+    " Plug 'tomasiser/vim-code-dark'
+    " Plug 'fxn/vim-monochrome'
+    " Plug 'pgdouyon/vim-yin-yang'
+    " Plug 'widatama/vim-phoenix'
+    " Plug 'danishprakash/vim-yami'
+
+    "" Git
     Plug 'tpope/vim-fugitive'
     Plug 'junegunn/gv.vim'
 
-    " Editing Specific
+    "" Editing
+    Plug 'neoclide/coc.nvim'
     Plug 'junegunn/vim-easy-align'
-
     Plug 'editorconfig/editorconfig-vim'
+    Plug 'dense-analysis/ale'
 call plug#end()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Plugin Settings
+" Advanced Settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Colour Scheme
 set t_Co=256
 set t_ut=
-colorscheme codedark
+colorscheme darkness
+"let g:lightline = { 'colorscheme': 'darkness' }
+set laststatus=2
+set noshowmode
 
-" Easy Align
-au FileType markdown vmap <Leader><Bslash> :EasyAlign*<Bar><Enter>
+au FileType markdown
+    \ set wrap |
+    \ vmap <Leader><Bslash> :EasyAlign*<Bar><Enter> |
+
+au FileType python
+    \ set tabstop=4 |
+    \ set softtabstop=4 |
+    \ set shiftwidth=4 |
+    \ set textwidth=79 |
+    \ set expandtab |
+    \ set autoindent |
 
 " COC
 " Tab to trigger completion
@@ -122,13 +131,10 @@ endfunction
 
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
-set laststatus=2
-let g:lightline = {
-    \ 'colorscheme': 'codedark'
+" Ale
+let g:ale_linters = {
+    \ 'python': ['flake8', 'pydocstyle']
     \ }
-" Airline
-" let g:airline_theme = 'codedark'
-" let g:airline_powerline_fonts = 1
 
 " Tmux
 if exists('$TMUX')
