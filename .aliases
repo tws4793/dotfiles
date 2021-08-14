@@ -4,11 +4,19 @@ CONFIG="$HOME/.config"
 # Dotfiles Repo
 alias dotfiles='$(which git) --git-dir=$HOME/.df --work-tree=$HOME'
 
-# Base
+# Main
 case "$(uname)" in
-    Linux) alias ls='ls --color';;
-    Darwin) alias ls='ls -G';;
+    Linux)
+        alias ls='ls --color'
+        alias docker='podman'
+    ;;
+    Darwin)
+        alias ls='ls -G'
+        alias battery='pmset -g batt'
+    ;;
 esac
+
+# Base
 alias la='ls -A'
 alias ll='ls -l'
 alias lla='ls -lA'
@@ -22,11 +30,15 @@ alias whereami='echo $PWD'
 alias off='sudo shutdown now'
 alias reboot='sudo shutdown -r now'
 
-# Git
 alias g='git'
 
+alias notebook='sh $CONFIG/scripts/notebook.sh'
+
+porttest() { curl portquiz.net:$1; }
+cheat() { curl cht.sh/$1; }
+ipaddress() { curl -4 ifconfig.co/$1; }
+
 # Docker
-[[ "$(uname)" == "Linux" ]] && alias docker='podman'
 alias d='docker'
 alias dps='docker ps -a'
 alias dex='docker exec -it'
@@ -39,10 +51,3 @@ alias drund='docker run --rm -d'
 alias dalias='alias | grep ^docker'
 alias dc='docker compose'
 dbash() { docker exec -it $1 bash; }
-
-# Other
-alias notebook='sh $CONFIG/scripts/notebook.sh'
-
-porttest(){	curl portquiz.net:$1; }
-cheat() { curl cht.sh/$1; }
-ipaddress() { curl -4 ifconfig.co/$1; }
