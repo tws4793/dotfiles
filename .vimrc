@@ -117,7 +117,8 @@ let g:coc_global_extensions = [
     \ 'coc-tsserver',
     \ 'coc-html',
     \ 'coc-css',
-    \ 'coc-python']
+    \ 'coc-python',
+    \ 'coc-vetur']
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
