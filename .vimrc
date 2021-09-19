@@ -65,6 +65,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/vim-easy-align'
     Plug 'editorconfig/editorconfig-vim'
     Plug 'dense-analysis/ale'
+    Plug 'posva/vim-vue'
+    Plug 'digitaltoad/vim-pug'
 call plug#end()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -118,7 +120,7 @@ let g:coc_global_extensions = [
     \ 'coc-html',
     \ 'coc-css',
     \ 'coc-python',
-    \ 'coc-vetur']
+    \ 'coc-vetur' ]
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
