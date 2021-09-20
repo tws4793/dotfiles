@@ -28,8 +28,11 @@ setopt hist_ignore_space
 ALIAS_FILE="$HOME/.aliases"
 [ -f $ALIAS_FILE ] && source $ALIAS_FILE
 
-export PATH="/usr/local/opt/openjdk/bin:$PATH"
 [ -f "/Users/tws/.ghcup/env" ] && source "/Users/tws/.ghcup/env" # ghcup-env
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Completions
 autoload -Uz compinit
