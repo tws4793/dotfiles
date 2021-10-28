@@ -30,6 +30,8 @@ alias whereami='echo $PWD'
 alias off='sudo shutdown now'
 alias reboot='sudo shutdown -r now'
 
+[ -x "$(command -v batcat)" ] && alias bat='batcat'
+
 alias g='git'
 
 alias notebook='sh $CONFIG/scripts/notebook.sh'
