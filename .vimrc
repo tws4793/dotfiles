@@ -51,7 +51,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'itchyny/lightline.vim'
     Plug 'Jorengarenar/vim-darkness'
     " Plug 'tomasiser/vim-code-dark'
-    " Plug 'fxn/vim-monochrome'
+    Plug 'fxn/vim-monochrome'
     " Plug 'pgdouyon/vim-yin-yang'
     " Plug 'widatama/vim-phoenix'
     " Plug 'danishprakash/vim-yami'
@@ -75,8 +75,8 @@ call plug#end()
 
 set t_Co=256
 set t_ut=
-colorscheme darkness
-"let g:lightline = { 'colorscheme': 'darkness' }
+colorscheme monochrome
+let g:lightline = { 'colorscheme': 'nord' }
 set laststatus=2
 set noshowmode
 
