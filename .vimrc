@@ -120,7 +120,8 @@ let g:coc_global_extensions = [
     \ 'coc-html',
     \ 'coc-css',
     \ 'coc-python',
-    \ 'coc-vetur' ]
+    \ 'coc-vetur' ,
+    \ 'coc-svelte' ]
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
