@@ -12,9 +12,9 @@ zstyle ':vcs_info:git:*' formats '%b:%8.8i'
 # Prompt
 prompt_detailed() {
     local items=(
-        '%*'
+        #'%*'
         '%F{%(!.red.green)}%n%f'
-        '%~'
+        '%F{8}%~%f'
         \$vcs_info_msg_0_
         '\n%F{%(?.green.red)}>%f'
     )
@@ -50,6 +50,8 @@ zle -N bracketed-paste bracketed-paste-magic
 
 autoload -Uz url-quote-magic
 zle -N self-insert url-quote-magic
+
+fpath=(~/.zsh/completion $fpath)
 
 ###-begin-pm2-completion-###
 ### credits to npm for the completion file model
