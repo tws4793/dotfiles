@@ -7,9 +7,6 @@ if &compatible
     set nocompatible
 endif
 
-" Line Number
-set number
-
 filetype off
 
 " Tabs
@@ -17,6 +14,7 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 set cursorline
+set autoindent
 
 " Hide Buffers
 set hidden
@@ -67,6 +65,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'dense-analysis/ale'
     Plug 'posva/vim-vue'
     Plug 'digitaltoad/vim-pug'
+    Plug 'prettier/vim-prettier',
+        \ { 'do': 'yarn install --frozen-lockfile --production' }
 call plug#end()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
