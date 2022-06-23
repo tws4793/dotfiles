@@ -24,19 +24,6 @@ PROMPT=$(prompt_detailed)
 
 setopt hist_ignore_space
 
-# Commands
-ALIAS_FILE="$HOME/.aliases"
-[ -f $ALIAS_FILE ] && source $ALIAS_FILE
-
-[ -f "/Users/tws/.ghcup/env" ] && source "/Users/tws/.ghcup/env" # ghcup-env
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
-path+=($HOME/.local/bin)
-export PATH
-
 # Completions
 autoload -Uz compinit
 [ "$(whoami)" = "tws" ] && compinit -i || compinit
@@ -93,3 +80,16 @@ elif type compctl &>/dev/null; then
   compctl -K _pm2_completion + -f + pm2
 fi
 ###-end-pm2-completion-###
+
+# Commands
+ALIAS_FILE="$HOME/.aliases"
+[ -f $ALIAS_FILE ] && source $ALIAS_FILE
+
+[ -f "/Users/tws/.ghcup/env" ] && source "/Users/tws/.ghcup/env" # ghcup-env
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+[ -x "$(command -v nvm)" ]  && nvm use 16 --silent
+
+export PATH="$HOME/.local/bin:/usr/local/sbin:$PATH"
