@@ -59,7 +59,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/gv.vim'
 
     "" Editing
-    Plug 'neoclide/coc.nvim'
+    Plug 'neoclide/coc.nvim',
+        \ { 'branch': 'release' }
     Plug 'junegunn/vim-easy-align'
     Plug 'editorconfig/editorconfig-vim'
     Plug 'dense-analysis/ale'
