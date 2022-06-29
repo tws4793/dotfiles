@@ -65,8 +65,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'dense-analysis/ale'
     Plug 'posva/vim-vue'
     Plug 'digitaltoad/vim-pug'
-    Plug 'prettier/vim-prettier',
-        \ { 'do': 'yarn install --frozen-lockfile --production' }
 call plug#end()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
