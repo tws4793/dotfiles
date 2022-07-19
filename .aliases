@@ -8,6 +8,8 @@ alias dotfiles='$(which git) --git-dir=$HOME/.df --work-tree=$HOME'
 case "$(uname)" in
     Linux)
         alias ls='ls --color'
+        [ -x "$(command -v xsel)" ] && alias pbcopy='xsel --clipboard --input'
+        [ -x "$(command -v xsel)" ] && alias pbpaste='xsel --clipboard --output'
     ;;
     Darwin)
         alias ls='ls -G'
