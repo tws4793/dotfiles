@@ -93,3 +93,4 @@ export NVM_DIR="$HOME/.nvm"
 [ -x "$(command -v nvm)" ]  && nvm use 16 --silent
 
 export PATH="$HOME/.local/bin:/usr/local/sbin:$PATH"
+[ -x "$(command yarn global bin)" ] && export PATH="$(yarn global bin):$PATH"
