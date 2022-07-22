@@ -63,9 +63,14 @@ call plug#begin('~/.vim/plugged')
         \ { 'branch': 'release' }
     Plug 'junegunn/vim-easy-align'
     Plug 'editorconfig/editorconfig-vim'
+    Plug 'prettier/vim-prettier',
+        \ { 'do': 'yarn install --frozen-lockfile --production' }
     Plug 'dense-analysis/ale'
     Plug 'posva/vim-vue'
     Plug 'digitaltoad/vim-pug'
+    Plug 'pangloss/vim-javascript'
+    Plug 'leafgarland/typescript-vim'
+    Plug 'peitalin/vim-jsx-typescript'
 call plug#end()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -121,6 +126,14 @@ let g:coc_global_extensions = [
     \ 'coc-python',
     \ 'coc-vetur' ,
     \ 'coc-svelte' ]
+
+if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
+    let g:coc_global_extensions += ['coc-prettier']
+endif
+
+if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
+    let g:coc_global_extensions += ['coc-eslint']
+endif
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
