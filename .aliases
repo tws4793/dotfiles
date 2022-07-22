@@ -33,6 +33,7 @@ alias off='sudo shutdown now'
 alias reboot='sudo shutdown -r now'
 
 [ -x "$(command -v batcat)" ] && alias bat='batcat'
+[ -x "$(command -v python3)" ] && alias python='python3'
 
 alias g='git'
 
