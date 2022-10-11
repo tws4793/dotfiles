@@ -21,13 +21,14 @@
     l1 = log -1
     m = merge
     nope = checkout .
-    ps = push
-    pu = pull
+    ps = push --verbose
+    pu = pull --verbose
     r = remote
     s = status
     t = tag
     wait = reset HEAD
     ua = restore --staged
+    uaa = restore --staged .
     uc = reset --soft HEAD^
     unstage = restore --staged
 
