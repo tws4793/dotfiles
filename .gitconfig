@@ -2,6 +2,9 @@
     name = Teo Wei Shen
     email = 7098637+tws4793@users.noreply.github.com
 
+[includeIf "gitdir:~/dev/work/"]
+    path = ~/dev/work/.gitconfig
+
 [alias]
     alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
     a = add

@@ -81,6 +81,11 @@ elif type compctl &>/dev/null; then
 fi
 ###-end-pm2-completion-###
 
+# Python Pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+
 # Commands
 ALIAS_FILE="$HOME/.aliases"
 [ -f $ALIAS_FILE ] && source $ALIAS_FILE

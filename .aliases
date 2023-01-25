@@ -26,14 +26,17 @@ alias cp='cp -v'
 alias mv='mv -v'
 alias rm='rm -v'
 alias ln='ln -iv'
+mcd() { mkdir -p -- "$1" && cd "$1" }
+mrename() { for file in $1; do mv -- "$file" "${file}.txt"; done; }
 
 alias shred='shred -fvuzn 35'
 alias whereami='echo $PWD'
 alias off='sudo shutdown now'
 alias reboot='sudo shutdown -r now'
+alias rmswap='sudo swapoff -a; sudo swapon -a;'
 
 [ -x "$(command -v batcat)" ] && alias bat='batcat'
-[ -x "$(command -v python3)" ] && alias python='python3'
+#[ -x "$(command -v python3)" ] && alias python='python3'
 
 alias g='git'
 
