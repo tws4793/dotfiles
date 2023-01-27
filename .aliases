@@ -37,6 +37,8 @@ alias rmswap='sudo swapoff -a; sudo swapon -a;'
 
 [ -x "$(command -v batcat)" ] && alias bat='batcat'
 #[ -x "$(command -v python3)" ] && alias python='python3'
+[ -x "$(command -v xsel)" ] && alias pbcopy='xsel --clipboard --input'
+[ -x "$(command -v xsel)" ] && alias pbpaste='xsel --clipboard --output'
 
 alias g='git'
 

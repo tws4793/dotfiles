@@ -99,3 +99,6 @@ export NVM_DIR="$HOME/.nvm"
 
 export PATH="$HOME/.local/bin:/usr/local/sbin:$PATH"
 [ -x "$(command yarn global bin)" ] && export PATH="$(yarn global bin):$PATH"
+
+EDITOR=vi
+export EDITOR
