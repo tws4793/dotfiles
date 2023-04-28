@@ -85,6 +85,7 @@ fi
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
 
 # Commands
 ALIAS_FILE="$HOME/.aliases"
@@ -99,6 +100,13 @@ export NVM_DIR="$HOME/.nvm"
 
 export PATH="$HOME/.local/bin:/usr/local/sbin:$PATH"
 [ -x "$(command yarn global bin)" ] && export PATH="$(yarn global bin):$PATH"
+export PATH="$HOME/.bin:$PATH"
+
+export HISTIGNORE="pwd:ls:cd"
+
+bindkey '^R' history-incremental-search-backward
+
+[ -f "/opt/ros/humble/setup.zsh" ] && source /opt/ros/humble/setup.zsh
 
 EDITOR=vi
 export EDITOR
