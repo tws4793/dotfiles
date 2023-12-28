@@ -81,6 +81,11 @@ elif type compctl &>/dev/null; then
 fi
 ###-end-pm2-completion-###
 
+# NVM
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
 # Python Pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
@@ -90,23 +95,14 @@ eval "$(pyenv virtualenv-init -)"
 # Commands
 ALIAS_FILE="$HOME/.aliases"
 [ -f $ALIAS_FILE ] && source $ALIAS_FILE
-
-[ -f "/Users/tws/.ghcup/env" ] && source "/Users/tws/.ghcup/env" # ghcup-env
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-[ -x "$(command -v nvm)" ]  && nvm use 16 --silent
-
-export PATH="$HOME/.local/bin:/usr/local/sbin:$PATH"
-[ -x "$(command yarn global bin)" ] && export PATH="$(yarn global bin):$PATH"
-export PATH="$HOME/.bin:$PATH"
-
-export HISTIGNORE="pwd:ls:cd"
-
-bindkey '^R' history-incremental-search-backward
-
+[ -f "$HOME/.ghcup/env" ] && source "$HOME/.ghcup/env"
 [ -f "/opt/ros/humble/setup.zsh" ] && source /opt/ros/humble/setup.zsh
 
-EDITOR=vi
-export EDITOR
+export PATH="$HOME/.bin:$HOME/.local/bin:/usr/local/sbin:$PATH"
+[ -x "$(command yarn global bin)" ] && export PATH="$(yarn global bin):$PATH"
+export EDITOR=vi
+export HISTIGNORE="pwd:ls:cd"
+export JAVA_HOME="/usr/lib/jvm/default-java"
+export ANDROID_SDK_ROOT="$HOME/Android/Sdk"
+
+bindkey '^R' history-incremental-search-backward
