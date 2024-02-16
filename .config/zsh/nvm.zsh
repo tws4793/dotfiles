@@ -25,3 +25,4 @@ load-nvmrc() {
 
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
+[ -x "$(command yarn global bin)" ] && export PATH="$(yarn global bin):$PATH"

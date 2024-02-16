@@ -32,7 +32,6 @@ GHCUP="$HOME/.ghcup/env"
 [ -f "/opt/ros/humble/setup.zsh" ] && source /opt/ros/humble/setup.zsh
 
 export PATH="$HOME/.bin:$HOME/.local/bin:/usr/local/sbin:$PATH"
-[ -x "$(command yarn global bin)" ] && export PATH="$(yarn global bin):$PATH"
 export EDITOR=vi
 export HISTIGNORE="pwd:ls:cd"
 export JAVA_HOME="/usr/lib/jvm/default-java"
