@@ -43,6 +43,7 @@ alias rmswap='sudo swapoff -a; sudo swapon -a;'
 alias g='git'
 
 alias notebook='sh $CONFIG/scripts/notebook.sh'
+alias aws='docker run --rm -it -v ~/.aws:/root/.aws -v $(pwd):/aws public.ecr.aws/aws-cli/aws-cli'
 
 porttest() { curl portquiz.net:$1; }
 cheat() { curl cht.sh/$1; }
