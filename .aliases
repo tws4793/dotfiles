@@ -28,6 +28,7 @@ alias rm='rm -v'
 alias ln='ln -iv'
 mcd() { mkdir -p -- "$1" && cd "$1" }
 mrename() { for file in $1; do mv -- "$file" "${file}.txt"; done; }
+mtouch() { mkdir -p -- "$1"; touch "$1/$2"; }
 
 alias shred='shred -fvuzn 35'
 alias whereami='echo $PWD'
@@ -43,7 +44,9 @@ alias rmswap='sudo swapoff -a; sudo swapon -a;'
 alias g='git'
 
 alias notebook='sh $CONFIG/scripts/notebook.sh'
-alias aws='docker run --rm -it -v ~/.aws:/root/.aws -v $(pwd):/aws public.ecr.aws/aws-cli/aws-cli'
+alias aws='docker run --rm -it -v $HOME/.aws:/root/.aws:ro -v $(pwd):/aws public.ecr.aws/aws-cli/aws-cli'
+alias harp='ssh otsaw-rnd1 "cat ~/Downloads/harp.mp3" | play --type mp3 -'
+alias rickroll='ssh otsaw-rnd1 "cat ~/Downloads/rickroll.mp3" | play --type mp3 -'
 
 porttest() { curl portquiz.net:$1; }
 cheat() { curl cht.sh/$1; }
