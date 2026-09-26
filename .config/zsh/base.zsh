@@ -36,5 +36,6 @@ export EDITOR=vi
 export HISTIGNORE="pwd:ls:cd"
 export JAVA_HOME="/usr/lib/jvm/default-java"
 export ANDROID_SDK_ROOT="$HOME/Android/Sdk"
+export HOMEBREW_BUNDLE_FILE="$HOME/.config/setup/Brewfile"
 
 bindkey '^R' history-incremental-search-backward
