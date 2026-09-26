@@ -1,0 +1,223 @@
+*mykeys.txt*   Personal Neovim cheat sheet                 Open with <Space>?
+
+                    MY KEYBINDINGS  —  in case of amnesia
+
+<Space> is the leader key. Press it and wait: a popup lists what comes next.
+Every key below is also searchable with <Space>fk (fuzzy keymap finder).
+
+Tip: in this page, put the cursor on a |link| and press CTRL-] to jump,
+CTRL-O to come back, / to search, q to close.
+
+==============================================================================
+CONTENTS                                                     *mykeys-contents*
+
+  1. Survival basics ................................ |mykeys-basics|
+  2. Files, search & the sidebar .................... |mykeys-files|
+  3. Open files (buffers) & windows ................. |mykeys-buffers|
+  4. Editing ........................................ |mykeys-editing|
+  5. Autocomplete ................................... |mykeys-completion|
+  6. Code intelligence (LSP) ........................ |mykeys-code|
+  7. Problems / diagnostics ......................... |mykeys-problems|
+  8. Git ............................................ |mykeys-git|
+  9. Terminal ....................................... |mykeys-terminal|
+ 10. Java / Spring Boot ............................. |mykeys-java|
+ 11. SonarQube ...................................... |mykeys-sonar|
+ 12. Toggles ........................................ |mykeys-toggles|
+ 13. Commands worth remembering ..................... |mykeys-commands|
+ 14. Where things live .............................. |mykeys-config|
+
+==============================================================================
+1. SURVIVAL BASICS                                             *mykeys-basics*
+
+  i / a / o         Insert before cursor / after cursor / on a new line
+  <Esc>             Back to normal mode (also clears search highlight)
+  CTRL-S            Save (works in normal, insert and visual mode)
+  :q                Close window         (:q! = discard changes)
+  <Space>q          Quit everything (asks about unsaved files)
+  u / CTRL-R        Undo / redo  (undo survives closing the file)
+  <Space>?          Open this page
+
+==============================================================================
+2. FILES, SEARCH & THE SIDEBAR                                  *mykeys-files*
+
+  <Space>e          Toggle the file sidebar            (CTRL-B outside tmux)
+  <Space>fe         Focus the sidebar, revealing the current file
+  `nvim .`          Start with the sidebar open
+
+  CTRL-P            Go to file (fuzzy)       — same as <Space>ff
+  <Space><Space>    Smart find (recent + open + project files)
+  <Space>/          Search text across the project  — same as <Space>fg
+  <Space>fw         Search the word under the cursor (or the selection)
+  <Space>fr         Recent files
+  <Space>f.         Resume the last search
+  <Space>ft         Find TODO / FIXME comments
+  <Space>fc         Command palette
+  <Space>fk         Search all keymaps
+  <Space>fh         Search Neovim help
+
+  Inside a picker: type to filter, CTRL-J/CTRL-K or arrows to move,
+  <Enter> open, CTRL-V open in vertical split, <Esc> close.
+
+  Inside the sidebar:                                       *mykeys-sidebar*
+  <Enter>           Open file / expand folder
+  a                 New file (end the name with / for a folder)
+  d / r             Delete / rename
+  c / m             Copy / move
+  H                 Show / hide hidden and ignored files
+  /                 Filter
+  ?                 Every sidebar key
+
+==============================================================================
+3. OPEN FILES (BUFFERS) & WINDOWS                             *mykeys-buffers*
+
+  Shift-L / Shift-H Next / previous open file
+  <Space>bb         Pick an open file       — same as <Space>fb
+  <Space>w          Close the current file (keeps the window)
+
+  CTRL-H/J/K/L      Move to the window left / down / up / right
+  :vsplit / :split  Split the window vertically / horizontally
+  CTRL-W o          Keep only the current window
+
+==============================================================================
+4. EDITING                                                    *mykeys-editing*
+
+  CTRL-/            Toggle comment on line or selection  (also gcc / gc)
+  Alt-J / Alt-K     Move line or selection down / up
+                    (terminal must send Option as Meta)
+  > / <             Indent / outdent selection (stays selected)
+  ga                Align (e.g. gaip= aligns a paragraph on =)
+  <Space>\          Markdown: align a selected table on |
+  <Space>cf         Format file or selection
+                    (also happens automatically on save)
+
+  Brackets, quotes and HTML/JSX tags close themselves.
+
+==============================================================================
+5. AUTOCOMPLETE                                            *mykeys-completion*
+
+  CTRL-Space        Open the completion menu
+  Tab / Shift-Tab   Next / previous suggestion; jump through snippet fields
+  <Enter>           Accept the suggestion
+  CTRL-E            Close the menu
+  CTRL-K            Show / hide the function signature
+
+==============================================================================
+6. CODE INTELLIGENCE (LSP)                                       *mykeys-code*
+
+  K                 Documentation for the thing under the cursor
+  gd  or  F12       Go to definition
+  gD                Go to declaration
+  gI                Go to implementation
+  gy                Go to type definition
+  Shift-F12 or grr  Find all references
+  F2  or <Space>cr  Rename symbol everywhere        (also grn)
+  <Space>ca         Code actions / quick fixes      (also gra)
+  <Space>co         Organize imports (TypeScript and Java)
+  <Space>cs         Outline of the file (symbols panel)
+  <Space>fs         Jump to a symbol in this file
+  <Space>fS         Jump to a symbol anywhere in the project
+  CTRL-O / CTRL-I   Jump back / forward after going somewhere
+
+==============================================================================
+7. PROBLEMS / DIAGNOSTICS                                    *mykeys-problems*
+
+  <Space>xx         Problems panel (whole project)
+  <Space>xb         Problems panel (this file only)
+  <Space>fd         Fuzzy-search problems
+  <Space>cd         Show the full error message for this line
+  ]d / [d           Next / previous problem
+  <Space>xq         Quickfix list
+
+==============================================================================
+8. GIT                                                            *mykeys-git*
+
+  ]h / [h           Next / previous changed block
+  <Space>gp         Preview the change under the cursor
+  <Space>gr         Revert that change
+  <Space>gS         Stage that change
+  <Space>gb         Toggle inline blame (who changed this line)
+  <Space>gd         Diff this file
+  <Space>gs         Git status (fuzzy picker)
+  <Space>gl         Git log
+  <Space>ge         Changed files in a floating tree
+
+  :Git              Fugitive: status window — s stage, u unstage,
+                    cc commit, = inline diff, g? help
+  :Git push / pull  Any git command
+  :GV               Commit history browser
+
+==============================================================================
+9. TERMINAL                                                  *mykeys-terminal*
+
+  CTRL-\            Toggle a terminal at the bottom
+  <Esc><Esc>        Leave terminal typing mode (to scroll / move)
+  i                 Go back to typing in the terminal
+
+==============================================================================
+10. JAVA / SPRING BOOT                                           *mykeys-java*
+
+Only in Java files. Needs JDK 21+ on the machine; tools install on first use.
+
+  <Space>co         Organize imports
+  <Space>cv         Extract variable      (normal or visual)
+  <Space>cC         Extract constant      (normal or visual)
+  <Space>cm         Extract method        (visual)
+  <Space>jt         Run tests in this file   (./mvnw or ./gradlew)
+  <Space>jT         Run all tests
+  <Space>jr         Run the Spring Boot app
+  <Space>jb         Spring beans
+  <Space>je         Spring endpoints (request mappings)
+  <Space>js         All Spring symbols
+
+==============================================================================
+11. SONARQUBE                                                    *mykeys-sonar*
+
+Sonar issues show up like any other problem: inline, in the Problems panel
+(<Space>xx) and with ]d / [d. Needs JDK 17+; installs on first use.
+
+  <Space>ca         On a Sonar issue: show the rule's description,
+                    deactivate the rule, or resolve the issue on the server
+  :SonarInfo        What's set up: JDK, server, token, project key
+
+  Connecting to the SonarQube server (set in your shell, e.g. ~/.zshrc):
+    export SONAR_HOST_URL=http://<sonar-host>:9000
+    export SONAR_TOKEN=<your user token>
+  Unset = local analysis with Sonar's default rules.
+
+  Project key, first one found in the project root wins:
+    .sonarlint/connectedMode.json   {"projectKey": "..."}   (VS Code's file)
+    sonar-project.properties        sonar.projectKey=...
+    pom.xml                         <sonar.projectKey>...</sonar.projectKey>
+    build.gradle(.kts)              property("sonar.projectKey", "...")
+
+  Turn Sonar off: vim.g.sonar_enabled = false in init.lua
+
+==============================================================================
+12. TOGGLES                                                   *mykeys-toggles*
+
+  <Space>uf         Format on save on / off
+  <Space>uh         Inline type hints on / off
+  <Space>un         Dismiss notifications
+
+==============================================================================
+13. COMMANDS WORTH REMEMBERING                               *mykeys-commands*
+
+  :Lazy             Plugins: update (U), sync (S), profile startup (P)
+  :Mason            Language servers & formatters: install (i), update (u)
+  :ConformInfo      Which formatter runs for this file, and why
+  :checkhealth      Diagnose problems with the setup
+  :TSInstall {lang} Install syntax highlighting for a language
+  :SpringBoot       Spring symbol search (Java projects)
+  :SonarInfo        SonarQube status (server, token, project key)
+  :Keys             Open this page (same as <Space>?)
+
+==============================================================================
+14. WHERE THINGS LIVE                                          *mykeys-config*
+
+  ~/.config/nvim/init.lua              Leader key, Nerd Font switch
+  ~/.config/nvim/lua/config/           Options, keymaps, autocmds
+  ~/.config/nvim/lua/plugins/          One file per area (ui, lsp, git, …)
+  ~/.config/nvim/lua/plugins/lsp.lua   Add a language server to `servers`
+  ~/.config/nvim/doc/mykeys.txt        This page — edit it when keys change
+
+ vim:tw=78:ts=8:ft=help:norl:
