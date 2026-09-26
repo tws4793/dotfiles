@@ -31,6 +31,8 @@ GHCUP="$HOME/.ghcup/env"
 [ -f $GHCUP ] && source $GHCUP
 [ -f "/opt/ros/humble/setup.zsh" ] && source /opt/ros/humble/setup.zsh
 
+# Homebrew on Apple Silicon isn't on PATH by default
+[ -x /opt/homebrew/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
 export PATH="$HOME/.bin:$HOME/.local/bin:/usr/local/sbin:$PATH"
 export EDITOR=vi
 export HISTIGNORE="pwd:ls:cd"
