@@ -1,0 +1,126 @@
+# Ubuntu workstation setup. Safe to re-run.
+# Run via install_ubuntu.sh, or directly:
+#   ansible-playbook -i localhost, -c local -K ubuntu.yml [-e '{"nopasswd_sudo": true}']
+- name: Set up Ubuntu workstation
+  hosts: localhost
+  connection: local
+  vars:
+    target_user: "{{ ansible_user_id }}"
+    home: "{{ ansible_env.HOME }}"
+    local_bin: "{{ home }}/.local/bin"
+    nopasswd_sudo: false # passwordless sudo for target_user; false removes it
+    local_rtc: true # keep hardware clock in local time (dual-boot with Windows)
+    packages:
+      - bat
+      - chrome-gnome-shell
+      - curl
+      - git
+      - gnome-shell-extension-prefs
+      - gnome-tweaks
+      - nmap
+      - neofetch
+      - openssh-server
+      - p7zip-full
+      - rename
+      - tmux
+      - tree
+      - unzip # needed by the fnm installer
+      - vim
+      - xsel
+      - zsh
+    deb_arch: "{{ {'x86_64': 'amd64', 'aarch64': 'arm64'}[ansible_architecture] }}"
+
+  tasks:
+    - name: System configuration
+      become: true
+      block:
+        - name: Passwordless sudo for {{ target_user }}
+          ansible.builtin.copy:
+            dest: /etc/sudoers.d/{{ target_user }}
+            content: "{{ target_user }} ALL=(ALL) NOPASSWD:ALL\n"
+            mode: "0440"
+            validate: visudo -cf %s
+          when: nopasswd_sudo | bool
+
+        - name: Remove passwordless sudo for {{ target_user }}
+          ansible.builtin.file:
+            path: /etc/sudoers.d/{{ target_user }}
+            state: absent
+          when: not nopasswd_sudo | bool
+
+        - name: Read hardware clock mode
+          ansible.builtin.command: timedatectl show --property=LocalRTC --value
+          register: rtc
+          changed_when: false
+
+        - name: Set hardware clock to local time
+          ansible.builtin.command: timedatectl set-local-rtc {{ '1' if local_rtc | bool else '0' }}
+          changed_when: true
+          when: rtc.stdout != ('yes' if local_rtc | bool else 'no')
+
+        - name: Upgrade installed packages
+          ansible.builtin.apt:
+            update_cache: true
+            cache_valid_time: 3600
+            upgrade: "yes"
+
+        - name: Install packages
+          ansible.builtin.apt:
+            name: "{{ packages }}"
+
+        # Docker Engine from Docker's apt repo (includes the compose plugin)
+        - name: Add Docker apt key
+          ansible.builtin.get_url:
+            url: https://download.docker.com/linux/ubuntu/gpg
+            dest: /etc/apt/keyrings/docker.asc
+            mode: "0644"
+
+        - name: Add Docker apt repository
+          ansible.builtin.apt_repository:
+            repo: >-
+              deb [arch={{ deb_arch }} signed-by=/etc/apt/keyrings/docker.asc]
+              https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+            filename: docker
+
+        - name: Install Docker
+          ansible.builtin.apt:
+            name:
+              - docker-ce
+              - docker-ce-cli
+              - containerd.io
+              - docker-buildx-plugin
+              - docker-compose-plugin
+
+        - name: "Add to docker group: {{ target_user }}"
+          ansible.builtin.user:
+            name: "{{ target_user }}"
+            groups: docker
+            append: true
+
+    # User-level tools, installed into ~/.local/bin (already on PATH via base.zsh)
+    - name: Install fnm
+      ansible.builtin.shell: >-
+        set -o pipefail &&
+        curl -fsSL https://fnm.vercel.app/install |
+        bash -s -- --install-dir "{{ local_bin }}" --skip-shell
+      args:
+        executable: /bin/bash
+        creates: "{{ local_bin }}/fnm"
+
+    - name: Install Node LTS with fnm
+      ansible.builtin.command: "{{ local_bin }}/fnm install --lts"
+      register: fnm_lts
+      changed_when: "'already installed' not in (fnm_lts.stdout + fnm_lts.stderr)"
+
+    - name: Set Node LTS as fnm default
+      ansible.builtin.command: "{{ local_bin }}/fnm default lts-latest"
+      changed_when: false
+
+    - name: Install uv
+      ansible.builtin.shell: set -o pipefail && curl -LsSf https://astral.sh/uv/install.sh | sh
+      args:
+        executable: /bin/bash
+        creates: "{{ local_bin }}/uv"
+      environment:
+        UV_INSTALL_DIR: "{{ local_bin }}"
+        UV_NO_MODIFY_PATH: "1"

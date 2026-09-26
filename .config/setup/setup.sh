@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Bootstrap dotfiles (bare repo in ~/.df) on a fresh machine. Safe to re-run.
+# Usage: setup.sh [--nopasswd]   (flag is passed to install_ubuntu.sh on Linux)
 set -euo pipefail
 
 DF_DIR="$HOME/.df"
@@ -13,6 +14,12 @@ if [[ "$(uname -s)" == "Darwin" ]] && ! xcode-select -p >/dev/null 2>&1; then
     echo "Installing Xcode Command Line Tools; re-run this script once it finishes."
     xcode-select --install
     exit 1
+fi
+
+# Ubuntu: git isn't always preinstalled
+if [[ "$(uname -s)" == "Linux" ]] && ! command -v git >/dev/null 2>&1; then
+    sudo apt-get update
+    sudo apt-get install -y git
 fi
 
 # Clone over HTTPS (no SSH key needed yet), then switch remote to SSH for pushing
@@ -46,4 +53,9 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
     done
     brew update
     brew bundle --file "$HOME/.config/setup/Brewfile"
+fi
+
+# Ubuntu: packages and system config via Ansible
+if [[ "$(uname -s)" == "Linux" ]]; then
+    "$HOME/.config/setup/install_ubuntu.sh" "$@"
 fi
