@@ -89,8 +89,10 @@ jobs:
           set -euo pipefail
           check() {
             echo "== $*"
+            # stderr minus terminal control codes (bash 3.2 sends ESC[?1034h) and job-control notices
             err=$("$@" -c 'type mcd >/dev/null && alias ll >/dev/null && echo "$PATH"' 2>&1 >/dev/null \
-              | grep -v -e 'no job control' -e 'cannot set terminal process group' || true)
+              | sed $'s/\x1b\\[[?0-9;]*[a-zA-Z]//g' \
+              | grep -v -e '^[[:space:]]*$' -e 'no job control' -e 'cannot set terminal process group' || true)
             if [ -n "$err" ]; then echo "$err"; return 1; fi
           }
           # /bin/bash is 3.2 on macOS
