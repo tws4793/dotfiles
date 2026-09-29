@@ -15,7 +15,11 @@
 {{-   $tilingWm = promptChoiceOnce . "tiling_wm" "Tiling window manager" $wmChoices "none" -}}
 {{- end -}}
 
-{{- $loginShell := promptChoiceOnce . "login_shell" "Login shell" (list "zsh" "bash" "unchanged") "zsh" -}}
+{{- /* macOS uses zsh only; Linux and WSL can use bash or zsh */ -}}
+{{- $loginShell := "zsh" -}}
+{{- if ne .chezmoi.os "darwin" -}}
+{{-   $loginShell = promptChoiceOnce . "login_shell" "Login shell" (list "zsh" "bash" "unchanged") "zsh" -}}
+{{- end -}}
 {{- $installPackages := promptBoolOnce . "install_packages" "Install packages (Homebrew or Ansible)" true -}}
 {{- $nopasswdSudo := false -}}
 {{- if and (eq .chezmoi.os "linux") $installPackages -}}

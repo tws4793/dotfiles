@@ -1,0 +1,9 @@
+{{- /* tmux plugin manager; plugins themselves are installed by run_onchange_after_20-tmux-plugins.sh.
+       Needs git, so a machine without it still gets its dotfiles; the next `chezmoi apply` after
+       installing git fetches tpm. */ -}}
+{{ if lookPath "git" -}}
+[".tmux/plugins/tpm"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/tpm.git"
+    refreshPeriod = "168h"
+{{ end -}}

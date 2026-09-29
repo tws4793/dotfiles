@@ -1,4 +1,4 @@
-# bash-completion (needs bash 4.2+, so macOS's /bin/bash 3.2 goes without)
+# bash-completion (needs bash 4.2+)
 if [ "${BASH_VERSINFO[0]}" -ge 4 ] && ! shopt -oq posix; then
     for f in \
         /usr/share/bash-completion/bash_completion \

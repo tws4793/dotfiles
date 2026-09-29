@@ -89,22 +89,24 @@ jobs:
           set -euo pipefail
           check() {
             echo "== $*"
-            # stderr minus terminal control codes (bash 3.2 sends ESC[?1034h) and job-control notices
             err=$("$@" -c 'type mcd >/dev/null && alias ll >/dev/null && echo "$PATH"' 2>&1 >/dev/null \
-              | sed $'s/\x1b\\[[?0-9;]*[a-zA-Z]//g' \
-              | grep -v -e '^[[:space:]]*$' -e 'no job control' -e 'cannot set terminal process group' || true)
+              | grep -v -e 'no job control' -e 'cannot set terminal process group' || true)
             if [ -n "$err" ]; then echo "$err"; return 1; fi
           }
-          # /bin/bash is 3.2 on macOS
-          check /bin/bash -i
-          check /bin/bash -il
+          # macOS uses zsh only; its bash files aren't installed
+          if [ "$RUNNER_OS" != macOS ]; then
+            check bash -i
+            check bash -il
+          fi
           check zsh -i
           check zsh -il
       - name: tmux loads the config and plugins
         shell: bash
         run: |
           set -euo pipefail
-          for shell in "$(command -v zsh)" /bin/bash; do
+          shells=("$(command -v zsh)")
+          [ "$RUNNER_OS" = macOS ] || shells+=("$(command -v bash)")
+          for shell in "${shells[@]}"; do
             SHELL=$shell tmux -f "$HOME/.tmux.conf" new-session -d -x 100 -y 20
             sleep 2
             keys=$(tmux list-keys)

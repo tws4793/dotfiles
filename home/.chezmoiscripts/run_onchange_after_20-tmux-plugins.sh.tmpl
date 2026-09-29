@@ -1,4 +1,4 @@
-{{- if lookPath "tmux" -}}
+{{- if and (lookPath "tmux") (lookPath "git") -}}
 #!/bin/bash
 # Install the tmux plugins listed in ~/.tmux.conf. Re-runs whenever it changes.
 # tmux.conf hash: {{ include "dot_tmux.conf" | sha256sum }}

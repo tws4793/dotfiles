@@ -2,7 +2,7 @@
 
 My personal dotfiles for macOS (Apple Silicon and Intel), Linux (Ubuntu/Debian, Fedora, and any other distro for the dotfiles themselves) and WSL, managed with [chezmoi](https://www.chezmoi.io/).
 
-- **One shell setup for bash and zsh.** Environment, aliases and tool hooks are plain POSIX files shared by both. Each shell adds only its own options, completion and the same two-line prompt.
+- **One shell setup for bash and zsh.** Environment, aliases and tool hooks are plain POSIX files shared by both. Each shell adds only its own options, completion and the same two-line prompt. macOS uses zsh only, so the bash files aren't installed there.
 - **The same tmux everywhere.** One `~/.tmux.conf`, with no OS-specific paths. tpm and its plugins are installed for you.
 - **Optional tiling window manager.** i3 or sway on Linux, AeroSpace on macOS, all with the same key layout. Skipped on WSL.
 - **Packages.** A Brewfile on macOS and an Ansible playbook on Linux. chezmoi re-runs them whenever they change.
@@ -18,7 +18,7 @@ This installs chezmoi, clones this repo over HTTPS, asks a few questions, instal
 | Question | Choices | Default |
 | --- | --- | --- |
 | Tiling window manager | macOS: `none`, `aerospace`; Linux: `none`, `i3`, `sway`; not asked on WSL | `none` |
-| Login shell | `zsh`, `bash`, `unchanged` | `zsh` |
+| Login shell (Linux and WSL; always zsh on macOS) | `zsh`, `bash`, `unchanged` | `zsh` |
 | Install packages (Homebrew or Ansible) | yes / no | yes |
 | Passwordless sudo (Linux only) | yes / no | no |
 
@@ -31,6 +31,8 @@ Per platform:
 - **Fedora:** Same as Ubuntu, but curl is already installed.
 - **Other distros:** The dotfiles apply as normal. Package installation is skipped with a message, so install zsh, tmux and neovim yourself.
 - **WSL:** In an Administrator PowerShell, run `wsl --install -d Ubuntu` (or use a Fedora distro), then follow the Linux steps inside WSL. WSL is detected automatically, so the playbook skips GNOME, the hardware clock and Docker Engine. For Docker, install Docker Desktop and turn on *Settings → Resources → WSL integration*.
+
+**Packages are optional.** Answer *no* to "Install packages" (or use a distro without a playbook) and chezmoi never runs Homebrew or Ansible; the dotfiles still apply. Tools the config uses (zsh, tmux, neovim, fnm, uv, git) are only picked up if they're installed, and tmux's plugin manager arrives on the next `chezmoi apply` once git and tmux exist. The playbook also runs on its own, without chezmoi (see the top of [`setup/linux.yml`](setup/linux.yml)).
 
 When it finishes, open a new terminal. If your login shell changed, log out and back in; this also picks up the `docker` group on Linux.
 
@@ -65,10 +67,10 @@ home/                          everything under here maps to $HOME (see .chezmoi
   .chezmoiexternal.toml        tpm
   .chezmoiscripts/             package install, tmux plugins, login shell
   dot_profile                  login env for sh/bash (and graphical sessions)
-  dot_bash_profile, dot_bashrc bash entry points
+  dot_bash_profile, dot_bashrc bash entry points (Linux and WSL only)
   dot_zshenv, dot_zprofile, dot_zshrc  zsh entry points
   dot_config/shell/            shared by bash and zsh: env.sh, aliases.sh, tools.sh
-  dot_config/bash/             bash only: options, completion, prompt
+  dot_config/bash/             bash only: options, completion, prompt (Linux and WSL only)
   dot_config/zsh/              zsh only: options, completion, prompt
   dot_tmux.conf                tmux
   dot_config/i3, sway, aerospace   tiling window managers
@@ -84,7 +86,7 @@ chezmoi's naming: `dot_x` becomes `.x`, `executable_x` is installed as executabl
 Both shells load the same pieces in the same order: `env.sh`, then shell-specific options, completion and prompt, then `aliases.sh`, `tools.sh` (fnm, uv, pm2) and `local.sh`.
 
 - **Environment:** `env.sh` puts Homebrew, then `~/.local/bin` and `~/.bin`, first on `PATH`. It's safe to source repeatedly and survives macOS's `path_helper`. It picks `EDITOR` (nvim, then vim, then vi) and finds `JAVA_HOME` on macOS, Debian and Fedora.
-- **bash:** Works with macOS's built-in bash 3.2. The Brewfile also installs bash 5, which is what enables bash-completion.
+- **bash:** Linux and WSL only; on macOS the bash files aren't installed.
 - **zsh:** Uses emacs keys at the prompt, the same as bash, whatever `$EDITOR` is.
 - **Clipboard:** `pbcopy`/`pbpaste` work everywhere. They map to `clip.exe` on WSL, `wl-copy` on Wayland and `xsel` on X11.
 
@@ -136,4 +138,4 @@ The `dotfiles` alias still works for git commands. Use `chezmoi add <file>` inst
 
 - shellcheck, an Ansible syntax check, and i3/sway config validation
 - the Linux playbook, run for real on Ubuntu
-- a dotfiles install on Ubuntu, Fedora and macOS, which then starts bash (including macOS's bash 3.2), zsh and tmux and checks for errors
+- a dotfiles install on Ubuntu, Fedora and macOS, which then starts each shell (bash and zsh on Linux, zsh on macOS) and tmux and checks for errors

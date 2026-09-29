@@ -1,5 +1,4 @@
-# Interactive bash. Shared bash/zsh config lives in ~/.config/shell.
-# Keep this and ~/.config/bash/* working on bash 3.2 (macOS's /bin/bash).
+# Interactive bash (Linux and WSL; macOS uses zsh only). Shared bash/zsh config lives in ~/.config/shell.
 case $- in
     *i*) ;;
     *) return ;;
