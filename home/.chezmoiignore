@@ -17,3 +17,6 @@
 {{ if ne .tiling_wm "aerospace" }}
 .config/aerospace
 {{ end }}
+{{ if ne .tiling_wm "amethyst" }}
+.amethyst.yml
+{{ end }}

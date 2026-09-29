@@ -22,5 +22,7 @@ brew bundle --file={{ joinPath .chezmoi.workingTree "setup/Brewfile" | quote }}
 
 {{ if eq .tiling_wm "aerospace" -}}
 brew install --cask nikitabobko/tap/aerospace
+{{- else if eq .tiling_wm "amethyst" -}}
+brew install --cask amethyst
 {{- end }}
 {{ end -}}

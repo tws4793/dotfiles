@@ -1,0 +1,18 @@
+# Amethyst (xmonad-style automatic tiling for macOS): https://github.com/ianyh/Amethyst
+#
+# The keys are Amethyst's own defaults (mod1 = option+shift, mod2 = option+shift+control),
+# so list only settings that differ from them here: Amethyst warns that repeating a
+# default hotkey in this file can stop it working (ianyh/Amethyst#1419).
+# Restart Amethyst after editing. If a change doesn't take effect, quit Amethyst, run
+#   defaults delete com.amethyst.Amethyst.plist
+# and start it again.
+#
+# tmux: Amethyst takes option+shift+n/p (focus next/previous screen), so tmux's M-N and
+# M-P never arrive. M-n and M-p do the same in tmux.
+
+# Cycled with mod1+space; also selected directly with mod1+a/s/d/f.
+layouts:
+  - tall
+  - wide
+  - fullscreen
+  - column

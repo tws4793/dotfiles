@@ -4,7 +4,7 @@ My personal dotfiles for macOS (Apple Silicon and Intel), Linux (Ubuntu/Debian, 
 
 - **One shell setup for bash and zsh.** Environment, aliases and tool hooks are plain POSIX files shared by both. Each shell adds only its own options, completion and the same two-line prompt. macOS uses zsh only, so the bash files aren't installed there.
 - **The same tmux everywhere.** One `~/.tmux.conf`, with no OS-specific paths. tpm and its plugins are installed for you.
-- **Optional tiling window manager.** i3 or sway on Linux, AeroSpace on macOS, all with the same key layout. Skipped on WSL.
+- **Optional tiling window manager.** i3 or sway on Linux; AeroSpace (same keys as i3) or Amethyst on macOS. Skipped on WSL.
 - **Packages.** A Brewfile on macOS and an Ansible playbook on Linux. chezmoi re-runs them whenever they change.
 
 ## New machine
@@ -17,7 +17,7 @@ This installs chezmoi, clones this repo over HTTPS, asks a few questions, instal
 
 | Question | Choices | Default |
 | --- | --- | --- |
-| Tiling window manager | macOS: `none`, `aerospace`; Linux: `none`, `i3`, `sway`; not asked on WSL | `none` |
+| Tiling window manager | macOS: `none`, `aerospace`, `amethyst`; Linux: `none`, `i3`, `sway`; not asked on WSL | `none` |
 | Login shell (Linux and WSL; always zsh on macOS) | `zsh`, `bash`, `unchanged` | `zsh` |
 | Install packages (Homebrew or Ansible) | yes / no | yes |
 | Passwordless sudo (Linux only) | yes / no | no |
@@ -74,6 +74,7 @@ home/                          everything under here maps to $HOME (see .chezmoi
   dot_config/zsh/              zsh only: options, completion, prompt
   dot_tmux.conf                tmux
   dot_config/i3, sway, aerospace   tiling window managers
+  dot_amethyst.yml             Amethyst (macOS)
   dot_config/nvim, dot_vimrc   editors
   dot_local/bin/               scripts on PATH (notebook)
   dot_gitconfig, dot_config/git/ignore
@@ -113,16 +114,21 @@ Other arguments go to JupyterLab, for example `notebook --no-browser`. To add a 
 
 Pick one at setup (or later with `chezmoi init --prompt`). The package scripts install it, and only its config is written.
 
-| | Linux (X11) | Linux (Wayland) | macOS |
-| --- | --- | --- | --- |
-| WM | i3 | sway | [AeroSpace](https://github.com/nikitabobko/AeroSpace) |
-| Config | `~/.config/i3/config` | `~/.config/sway/config` | `~/.config/aerospace/aerospace.toml` |
-| `$mod` | Super | Super | Ctrl+Alt |
-| Terminal | urxvt + tmux | foot + tmux | Terminal.app |
+| | Linux (X11) | Linux (Wayland) | macOS | macOS |
+| --- | --- | --- | --- | --- |
+| WM | i3 | sway | [AeroSpace](https://github.com/nikitabobko/AeroSpace) | [Amethyst](https://github.com/ianyh/Amethyst) |
+| Style | manual tree (split, stack, tab) | same as i3 | same as i3 | automatic layouts (xmonad-style) |
+| Config | `~/.config/i3/config` | `~/.config/sway/config` | `~/.config/aerospace/aerospace.toml` | `~/.amethyst.yml` |
+| Modifier | Super | Super | Ctrl+Alt | Option+Shift (Amethyst's default) |
+| Terminal | urxvt + tmux | foot + tmux | Terminal.app | — |
 
-All three use the same keys: `$mod+j/k/l/;` to focus, `+Shift` to move, `$mod+h/v` to split, `$mod+s/w/e` for layouts, `$mod+1…0` for workspaces, `$mod+r` to resize and `$mod+Shift+q` to close. On macOS, `$mod` is Ctrl+Alt rather than Alt or Cmd. Alt alone would take tmux's `M-` keys, and Cmd would take `Cmd-H`, `Cmd-Q` and `Cmd-1…9`.
+**i3, sway and AeroSpace** use the same keys: `$mod+j/k/l/;` to focus, `+Shift` to move, `$mod+h/v` to split, `$mod+s/w/e` for layouts, `$mod+1…0` for workspaces, `$mod+r` to resize and `$mod+Shift+q` to close. On macOS, `$mod` is Ctrl+Alt rather than Alt or Cmd. Alt alone would take tmux's `M-` keys, and Cmd would take `Cmd-H`, `Cmd-Q` and `Cmd-1…9`.
 
-After installing sway, choose *Sway* on your login screen. After installing AeroSpace, grant it Accessibility access when macOS asks.
+**Amethyst** keeps its own default keys: Option+Shift+`j/k` to focus, `+Ctrl` to swap, `Space` to cycle layouts, `a/s/d/f` for tall/wide/fullscreen/column, `h/l` to resize the main pane, and Option+Shift+Ctrl+`1…0` to send a window to a Space. It takes Option+Shift+`n/p`, so tmux's `M-N`/`M-P` don't reach tmux; `M-n`/`M-p` do the same thing there. Only settings that differ from Amethyst's defaults go in `~/.amethyst.yml` (repeating a default hotkey there can stop it working); restart Amethyst after editing.
+
+**Which one on macOS?** AeroSpace if you want the same muscle memory as i3/sway on Linux: manual splits, and its own instant-switching workspaces instead of macOS Spaces. Amethyst if you prefer windows arranged for you and native Spaces and Mission Control; moving windows between Spaces relies on macOS and can be less reliable.
+
+After installing sway, choose *Sway* on your login screen. After installing AeroSpace or Amethyst, grant it Accessibility access when macOS asks.
 
 ## Moving an existing machine from the old bare repo (`~/.df`)
 

@@ -6,7 +6,7 @@
 
 {{- $wmChoices := list "none" -}}
 {{- if eq .chezmoi.os "darwin" -}}
-{{-   $wmChoices = list "none" "aerospace" -}}
+{{-   $wmChoices = list "none" "aerospace" "amethyst" -}}
 {{- else if and (eq .chezmoi.os "linux") (not $isWsl) -}}
 {{-   $wmChoices = list "none" "i3" "sway" -}}
 {{- end -}}
