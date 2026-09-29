@@ -73,10 +73,11 @@ home/                          everything under here maps to $HOME (see .chezmoi
   dot_tmux.conf                tmux
   dot_config/i3, sway, aerospace   tiling window managers
   dot_config/nvim, dot_vimrc   editors
+  dot_local/bin/               scripts on PATH (notebook)
   dot_gitconfig, dot_config/git/ignore
 ```
 
-chezmoi's naming: `dot_x` becomes `.x`, and a `.tmpl` file is rendered per machine (for example, `env.sh.tmpl` holds the Brewfile path).
+chezmoi's naming: `dot_x` becomes `.x`, `executable_x` is installed as executable, and a `.tmpl` file is rendered per machine (for example, `env.sh.tmpl` holds the Brewfile path). Files these dotfiles used to install and no longer do are listed in `.chezmoiremove`, and `chezmoi apply` deletes them.
 
 ## Shells
 
@@ -95,6 +96,16 @@ The config is the same on every platform. It doesn't set `default-shell`, so tmu
 - **iTerm2:** Settings → Profiles → Keys → *Left Option key: Esc+*
 - **Ghostty:** `macos-option-as-alt = true`
 - **WezTerm:** `send_composed_key_when_left_alt_is_pressed = false`
+
+## Jupyter notebooks
+
+`notebook` starts JupyterLab in the current directory, using [uv](https://docs.astral.sh/uv/) (installed on every platform). Ctrl-C stops it.
+
+- **Inside a uv project** (a `pyproject.toml` in this directory or above), it runs `uv run --with jupyterlab jupyter lab`. The notebook sees exactly the project's dependencies, and JupyterLab isn't added to `pyproject.toml`.
+- **Anywhere else**, it uses a cached environment with JupyterLab plus `$NOTEBOOK_PACKAGES` (default `numpy pandas matplotlib`). To choose your own, run `NOTEBOOK_PACKAGES="polars seaborn" notebook`.
+- **`notebook --container [IMAGE]`** runs a [Jupyter Docker Stacks](https://jupyter-docker-stacks.readthedocs.io/) image with podman or Docker, for heavy stacks you'd rather not install. `IMAGE` can be a short name (`scipy`, `tensorflow`, `pytorch`) or a full image name. The current directory is mounted at `~/work`, files you create there belong to you, and it listens on `127.0.0.1:$NOTEBOOK_PORT` (default 8888).
+
+Other arguments go to JupyterLab, for example `notebook --no-browser`. To add a package to a project for good, run `uv add <pkg>`. VS Code can also open `.ipynb` files directly, using the same project environment.
 
 ## Tiling window managers
 

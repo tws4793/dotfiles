@@ -48,7 +48,6 @@ command -v batcat >/dev/null 2>&1 && alias bat='batcat'
 
 alias g='git'
 
-alias notebook='sh "$HOME/.config/scripts/notebook.sh"'
 alias aws='docker run --rm -it -v "$HOME/.aws:/root/.aws:ro" -v "$(pwd):/aws" public.ecr.aws/aws-cli/aws-cli'
 alias harp='ssh otsaw-rnd1 "cat ~/Downloads/harp.mp3" | play --type mp3 -'
 alias rickroll='ssh otsaw-rnd1 "cat ~/Downloads/rickroll.mp3" | play --type mp3 -'

@@ -1,0 +1,2 @@
+# Targets chezmoi deletes from $HOME on apply (files these dotfiles used to install)
+.config/scripts/notebook.sh
