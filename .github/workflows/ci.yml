@@ -67,6 +67,8 @@ jobs:
     name: apply (${{ matrix.name }})
     runs-on: ${{ matrix.runs-on }}
     container: ${{ matrix.container }}
+    env:
+      TERM: xterm-256color # a real terminal always sets it; CI has none
     steps:
       - name: Install shells and tmux
         run: |
@@ -103,8 +105,12 @@ jobs:
           for shell in "$(command -v zsh)" /bin/bash; do
             SHELL=$shell tmux -f "$HOME/.tmux.conf" new-session -d -x 100 -y 20
             sleep 2
-            tmux list-keys -T root M-h | grep -q select-pane
-            tmux list-keys | grep -q resurrect
-            [ "$(tmux display -p '#{pane_current_command}')" = "$(basename "$shell")" ]
+            keys=$(tmux list-keys)
+            cmd=$(tmux display -p '#{pane_current_command}')
             tmux kill-server
+            echo "== $shell: pane runs '$cmd'"
+            grep -q 'M-h.*select-pane' <<<"$keys" || { echo "M-h binding missing"; exit 1; }
+            grep -q resurrect <<<"$keys" || { echo "tmux-resurrect not loaded:"; ls "$HOME/.tmux/plugins"; exit 1; }
+            # a login shell may show as -zsh
+            [ "${cmd#-}" = "$(basename "$shell")" ] || { echo "expected $(basename "$shell")"; exit 1; }
           done

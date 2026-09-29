@@ -66,7 +66,7 @@ home/                          everything under here maps to $HOME (see .chezmoi
   .chezmoiscripts/             package install, tmux plugins, login shell
   dot_profile                  login env for sh/bash (and graphical sessions)
   dot_bash_profile, dot_bashrc bash entry points
-  dot_zprofile, dot_zshrc      zsh entry points
+  dot_zshenv, dot_zprofile, dot_zshrc  zsh entry points
   dot_config/shell/            shared by bash and zsh: env.sh, aliases.sh, tools.sh
   dot_config/bash/             bash only: options, completion, prompt
   dot_config/zsh/              zsh only: options, completion, prompt
