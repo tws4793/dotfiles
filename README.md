@@ -1,89 +1,128 @@
 # dotfiles
 
-This repo contains my personal dotfiles.
+My personal dotfiles for macOS (Apple Silicon and Intel), Linux (Ubuntu/Debian, Fedora, and any other distro for the dotfiles themselves) and WSL, managed with [chezmoi](https://www.chezmoi.io/).
 
-As with any dotfiles, this is always a work in progress.
+- **One shell setup for bash and zsh.** Environment, aliases and tool hooks are plain POSIX files shared by both. Each shell adds only its own options, completion and the same two-line prompt.
+- **The same tmux everywhere.** One `~/.tmux.conf`, with no OS-specific paths. tpm and its plugins are installed for you.
+- **Optional tiling window manager.** i3 or sway on Linux, AeroSpace on macOS, all with the same key layout. Skipped on WSL.
+- **Packages.** A Brewfile on macOS and an Ansible playbook on Linux. chezmoi re-runs them whenever they change.
 
-It uses the [git bare repo method](https://www.atlassian.com/git/tutorials/dotfiles): the repo lives in `~/.df` and your home directory is the work tree. [`.config/setup/setup.sh`](.config/setup/setup.sh) sets up a new machine end to end and is safe to re-run.
-
-| Platform | What `setup.sh` does after checking out the dotfiles |
-| --- | --- |
-| macOS | Installs Homebrew and everything in [`Brewfile`](.config/setup/Brewfile) |
-| Ubuntu / Debian | Installs Ansible and runs [`linux.yml`](.config/setup/linux.yml) |
-| Fedora | Same as Ubuntu, using `dnf` |
-| WSL | Same as Ubuntu/Fedora, but skips GNOME apps, the hardware clock and Docker Engine |
-
-If a file the dotfiles track already exists (for example a default `~/.zshrc`), it is moved to `~/.df-backup/<timestamp>/` before checkout.
-
-## New Mac
-
-1. Open Terminal and run:
-
-   ```console
-   curl -fsSL https://raw.githubusercontent.com/tws4793/dotfiles/main/.config/setup/setup.sh -o /tmp/setup.sh
-   bash /tmp/setup.sh
-   ```
-
-2. If a dialog asks to install the Xcode Command Line Tools, finish that install and run `bash /tmp/setup.sh` again. Git comes with those tools.
-3. Enter your password when the Homebrew installer asks for it. `brew bundle` then installs the Brewfile, which can take a while.
-4. Open a new terminal.
-
-## New Ubuntu / Debian
-
-1. Install curl (Ubuntu Desktop doesn't include it):
-
-   ```console
-   sudo apt install -y curl
-   ```
-
-2. Download and run the setup script:
-
-   ```console
-   curl -fsSL https://raw.githubusercontent.com/tws4793/dotfiles/main/.config/setup/setup.sh -o /tmp/setup.sh
-   bash /tmp/setup.sh
-   ```
-
-   Add `--nopasswd` to enable passwordless sudo (`bash /tmp/setup.sh --nopasswd`). It's off by default, and re-running without the flag turns it off again.
-
-3. When Ansible asks for the `BECOME password`, enter your sudo password.
-4. Make zsh your login shell, then log out and back in (this also applies the `docker` group):
-
-   ```console
-   chsh -s "$(command -v zsh)"
-   ```
-
-The playbook keeps the hardware clock in local time, for dual-booting with Windows. To turn that off, set `local_rtc: false` at the top of [`linux.yml`](.config/setup/linux.yml).
-
-## New Fedora
-
-Same as Ubuntu, without step 1, since Fedora includes curl:
+## New machine
 
 ```console
-curl -fsSL https://raw.githubusercontent.com/tws4793/dotfiles/main/.config/setup/setup.sh -o /tmp/setup.sh
-bash /tmp/setup.sh            # or: bash /tmp/setup.sh --nopasswd
-chsh -s "$(command -v zsh)"   # then log out and back in
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/tws4793/dotfiles/main/install.sh)"
 ```
 
-Docker is installed from Docker's Fedora repository and enabled at boot.
+This installs chezmoi, clones this repo over HTTPS, asks a few questions, installs packages and applies the dotfiles. It's safe to re-run. Any file it would overwrite is first moved to `~/.dotfiles-backup/<timestamp>/`.
 
-## New WSL
+| Question | Choices | Default |
+| --- | --- | --- |
+| Tiling window manager | macOS: `none`, `aerospace`; Linux: `none`, `i3`, `sway`; not asked on WSL | `none` |
+| Login shell | `zsh`, `bash`, `unchanged` | `zsh` |
+| Install packages (Homebrew or Ansible) | yes / no | yes |
+| Passwordless sudo (Linux only) | yes / no | no |
 
-1. In PowerShell (as Administrator), install WSL with Ubuntu, then restart if asked and create your Linux user:
+The answers are saved in `~/.config/chezmoi/chezmoi.toml`. To answer them again, run `chezmoi init --prompt && chezmoi apply`.
 
-   ```powershell
-   wsl --install -d Ubuntu
-   ```
+Per platform:
 
-2. For Docker, install Docker Desktop on Windows and turn on **Settings → Resources → WSL integration** for your distro. The playbook doesn't install Docker Engine inside WSL.
-3. Inside WSL, follow the [Ubuntu steps](#new-ubuntu--debian) (or the [Fedora steps](#new-fedora) for a Fedora distro). WSL is detected automatically, so GNOME apps, the hardware clock and Docker Engine are skipped.
+- **macOS:** If a dialog asks to install the Xcode Command Line Tools, let it finish. Enter your password when Homebrew asks for it. `brew bundle` then installs the [Brewfile](setup/Brewfile).
+- **Ubuntu / Debian:** Ubuntu Desktop has no curl, so run `sudo apt install -y curl` first. Ansible asks for your sudo (`BECOME`) password, then runs [`setup/linux.yml`](setup/linux.yml).
+- **Fedora:** Same as Ubuntu, but curl is already installed.
+- **Other distros:** The dotfiles apply as normal. Package installation is skipped with a message, so install zsh, tmux and neovim yourself.
+- **WSL:** In an Administrator PowerShell, run `wsl --install -d Ubuntu` (or use a Fedora distro), then follow the Linux steps inside WSL. WSL is detected automatically, so the playbook skips GNOME, the hardware clock and Docker Engine. For Docker, install Docker Desktop and turn on *Settings → Resources → WSL integration*.
+
+When it finishes, open a new terminal. If your login shell changed, log out and back in; this also picks up the `docker` group on Linux.
 
 ## Day to day
 
+chezmoi keeps the repo in `~/.local/share/chezmoi` and writes the files into `$HOME`.
+
 ```console
-dotfiles status                 # the dotfiles alias works like git
-dotfiles add -u && dotfiles commit -m "..." && dotfiles push
+chezmoi edit ~/.zshrc          # edit the source file, then...
+chezmoi apply                  # ...write it to $HOME (also re-runs changed package scripts)
+chezmoi re-add                 # or: edit files in $HOME directly, then copy them back into the repo
+chezmoi diff                   # what apply would change
+chezmoi update                 # git pull + apply
+
+dotfiles status                # the dotfiles alias is git, run in the repo
+dotfiles commit -am "..." && dotfiles push
 ```
 
-- **Update everything:** re-run `~/.config/setup/setup.sh`.
-- **macOS packages:** `HOMEBREW_BUNDLE_FILE` points at the Brewfile, so plain `brew bundle` (install missing), `brew bundle check` and `brew bundle cleanup` work from anywhere.
-- **Pushing:** the repo is cloned over HTTPS and then switched to SSH, so add an SSH key to GitHub before you push.
+- **Push over SSH:** the repo fetches over HTTPS and pushes over SSH, so add an SSH key to GitHub before pushing.
+- **macOS packages:** `HOMEBREW_BUNDLE_FILE` points at the Brewfile in the repo. Plain `brew bundle`, `brew bundle check` and `brew bundle cleanup` work from anywhere, and `brew bundle dump --force` writes straight into the repo.
+- **Machine-specific shell settings** go in `~/.config/shell/local.sh`. Both shells source it last, and it isn't tracked.
+
+## Layout
+
+```
+install.sh                     bootstrap: install chezmoi, back up conflicts, apply
+setup/Brewfile                 macOS packages
+setup/linux.yml                Linux packages and system settings (Ansible)
+home/                          everything under here maps to $HOME (see .chezmoiroot)
+  .chezmoi.toml.tmpl           the setup questions
+  .chezmoiignore               which files each machine gets (e.g. only the chosen WM)
+  .chezmoiexternal.toml        tpm
+  .chezmoiscripts/             package install, tmux plugins, login shell
+  dot_profile                  login env for sh/bash (and graphical sessions)
+  dot_bash_profile, dot_bashrc bash entry points
+  dot_zprofile, dot_zshrc      zsh entry points
+  dot_config/shell/            shared by bash and zsh: env.sh, aliases.sh, tools.sh
+  dot_config/bash/             bash only: options, completion, prompt
+  dot_config/zsh/              zsh only: options, completion, prompt
+  dot_tmux.conf                tmux
+  dot_config/i3, sway, aerospace   tiling window managers
+  dot_config/nvim, dot_vimrc   editors
+  dot_gitconfig, dot_config/git/ignore
+```
+
+chezmoi's naming: `dot_x` becomes `.x`, and a `.tmpl` file is rendered per machine (for example, `env.sh.tmpl` holds the Brewfile path).
+
+## Shells
+
+Both shells load the same pieces in the same order: `env.sh`, then shell-specific options, completion and prompt, then `aliases.sh`, `tools.sh` (fnm, uv, pm2) and `local.sh`.
+
+- **Environment:** `env.sh` puts Homebrew, then `~/.local/bin` and `~/.bin`, first on `PATH`. It's safe to source repeatedly and survives macOS's `path_helper`. It picks `EDITOR` (nvim, then vim, then vi) and finds `JAVA_HOME` on macOS, Debian and Fedora.
+- **bash:** Works with macOS's built-in bash 3.2. The Brewfile also installs bash 5, which is what enables bash-completion.
+- **zsh:** Uses emacs keys at the prompt, the same as bash, whatever `$EDITOR` is.
+- **Clipboard:** `pbcopy`/`pbpaste` work everywhere. They map to `clip.exe` on WSL, `wl-copy` on Wayland and `xsel` on X11.
+
+## tmux
+
+The config is the same on every platform. It doesn't set `default-shell`, so tmux uses your login shell. `M-h/j/k/l`, `M-n/p` and `M-c` need your terminal to send Option as Meta on macOS:
+
+- **Terminal.app:** Settings → Profiles → Keyboard → *Use Option as Meta key*
+- **iTerm2:** Settings → Profiles → Keys → *Left Option key: Esc+*
+- **Ghostty:** `macos-option-as-alt = true`
+- **WezTerm:** `send_composed_key_when_left_alt_is_pressed = false`
+
+## Tiling window managers
+
+Pick one at setup (or later with `chezmoi init --prompt`). The package scripts install it, and only its config is written.
+
+| | Linux (X11) | Linux (Wayland) | macOS |
+| --- | --- | --- | --- |
+| WM | i3 | sway | [AeroSpace](https://github.com/nikitabobko/AeroSpace) |
+| Config | `~/.config/i3/config` | `~/.config/sway/config` | `~/.config/aerospace/aerospace.toml` |
+| `$mod` | Super | Super | Ctrl+Alt |
+| Terminal | urxvt + tmux | foot + tmux | Terminal.app |
+
+All three use the same keys: `$mod+j/k/l/;` to focus, `+Shift` to move, `$mod+h/v` to split, `$mod+s/w/e` for layouts, `$mod+1…0` for workspaces, `$mod+r` to resize and `$mod+Shift+q` to close. On macOS, `$mod` is Ctrl+Alt rather than Alt or Cmd. Alt alone would take tmux's `M-` keys, and Cmd would take `Cmd-H`, `Cmd-Q` and `Cmd-1…9`.
+
+After installing sway, choose *Sway* on your login screen. After installing AeroSpace, grant it Accessibility access when macOS asks.
+
+## Moving an existing machine from the old bare repo (`~/.df`)
+
+1. Commit and push anything left in `~/.df`.
+2. Run the install command above. It moves `~/.df` and the old files it tracked (`~/.aliases`, `~/.gitignore`, `~/README.md`, `~/.config/zsh/{base,fnm,pm2,completions}.zsh`, `~/.config/setup`) into `~/.dotfiles-backup/<timestamp>/`, and backs up anything chezmoi replaces.
+3. Open a new terminal. When you're happy, delete `~/.dotfiles-backup`.
+
+The `dotfiles` alias still works for git commands. Use `chezmoi add <file>` instead of `dotfiles add`.
+
+## CI
+
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push:
+
+- shellcheck, an Ansible syntax check, and i3/sway config validation
+- the Linux playbook, run for real on Ubuntu
+- a dotfiles install on Ubuntu, Fedora and macOS, which then starts bash (including macOS's bash 3.2), zsh and tmux and checks for errors

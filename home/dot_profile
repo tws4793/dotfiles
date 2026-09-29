@@ -1,0 +1,2 @@
+# Login shells other than zsh (sh, dash, bash via ~/.bash_profile), and graphical sessions.
+. "$HOME/.config/shell/env.sh"

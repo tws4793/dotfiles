@@ -1,0 +1,30 @@
+{{- /* Per-machine settings. Asked once by `chezmoi init`; re-ask with `chezmoi init --prompt`, or edit ~/.config/chezmoi/chezmoi.toml. */ -}}
+{{- $isWsl := false -}}
+{{- if eq .chezmoi.os "linux" -}}
+{{-   $isWsl = .chezmoi.kernel.osrelease | lower | contains "microsoft" -}}
+{{- end -}}
+
+{{- $wmChoices := list "none" -}}
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   $wmChoices = list "none" "aerospace" -}}
+{{- else if and (eq .chezmoi.os "linux") (not $isWsl) -}}
+{{-   $wmChoices = list "none" "i3" "sway" -}}
+{{- end -}}
+{{- $tilingWm := "none" -}}
+{{- if gt (len $wmChoices) 1 -}}
+{{-   $tilingWm = promptChoiceOnce . "tiling_wm" "Tiling window manager" $wmChoices "none" -}}
+{{- end -}}
+
+{{- $loginShell := promptChoiceOnce . "login_shell" "Login shell" (list "zsh" "bash" "unchanged") "zsh" -}}
+{{- $installPackages := promptBoolOnce . "install_packages" "Install packages (Homebrew or Ansible)" true -}}
+{{- $nopasswdSudo := false -}}
+{{- if and (eq .chezmoi.os "linux") $installPackages -}}
+{{-   $nopasswdSudo = promptBoolOnce . "nopasswd_sudo" "Passwordless sudo" false -}}
+{{- end -}}
+
+[data]
+    is_wsl = {{ $isWsl }}
+    tiling_wm = {{ $tilingWm | quote }}
+    login_shell = {{ $loginShell | quote }}
+    install_packages = {{ $installPackages }}
+    nopasswd_sudo = {{ $nopasswdSudo }}

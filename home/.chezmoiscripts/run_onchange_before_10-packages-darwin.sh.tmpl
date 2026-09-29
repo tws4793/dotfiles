@@ -1,0 +1,26 @@
+{{- if and (eq .chezmoi.os "darwin") .install_packages -}}
+#!/bin/bash
+# Homebrew + Brewfile. Re-runs whenever the Brewfile or the tiling WM choice changes.
+# Brewfile hash: {{ include (joinPath .chezmoi.workingTree "setup/Brewfile") | sha256sum }}
+# tiling_wm: {{ .tiling_wm }}
+set -euo pipefail
+
+if ! command -v brew >/dev/null 2>&1; then
+    for b in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+        [[ -x "$b" ]] && break
+    done
+    if [[ ! -x "$b" ]]; then
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+    # A fresh install isn't on PATH yet
+    for b in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+        [[ -x "$b" ]] && eval "$("$b" shellenv)" && break
+    done
+fi
+
+brew bundle --file={{ joinPath .chezmoi.workingTree "setup/Brewfile" | quote }}
+
+{{ if eq .tiling_wm "aerospace" -}}
+brew install --cask nikitabobko/tap/aerospace
+{{- end }}
+{{ end -}}

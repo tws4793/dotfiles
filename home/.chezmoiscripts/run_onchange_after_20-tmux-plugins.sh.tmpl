@@ -1,0 +1,9 @@
+{{- if lookPath "tmux" -}}
+#!/bin/bash
+# Install the tmux plugins listed in ~/.tmux.conf. Re-runs whenever it changes.
+# tmux.conf hash: {{ include "dot_tmux.conf" | sha256sum }}
+set -euo pipefail
+tpm="$HOME/.tmux/plugins/tpm"
+[[ -x "$tpm/bin/install_plugins" ]] || exit 0
+"$tpm/bin/install_plugins" >/dev/null
+{{ end -}}

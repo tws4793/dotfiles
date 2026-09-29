@@ -1,0 +1,5 @@
+# Login bash (macOS terminals and tmux panes start login shells).
+. "$HOME/.profile"
+case $- in
+    *i*) . "$HOME/.bashrc" ;;
+esac

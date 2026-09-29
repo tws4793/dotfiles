@@ -1,0 +1,33 @@
+{{- if and (eq .chezmoi.os "linux") .install_packages -}}
+#!/bin/bash
+# Install Ansible and apply setup/linux.yml. Re-runs whenever the playbook or these settings change.
+# linux.yml hash: {{ include (joinPath .chezmoi.workingTree "setup/linux.yml") | sha256sum }}
+# settings: tiling_wm={{ .tiling_wm }} nopasswd_sudo={{ .nopasswd_sudo }}
+set -euo pipefail
+
+. /etc/os-release
+case " ${ID:-} ${ID_LIKE:-} " in
+    *" debian "* | *" ubuntu "* | *" fedora "* | *" rhel "*) ;;
+    *)
+        echo "Skipping packages: no playbook for ${PRETTY_NAME:-this distro} (dotfiles still apply)." >&2
+        exit 0
+        ;;
+esac
+
+if ! command -v ansible-playbook >/dev/null 2>&1; then
+    if command -v apt-get >/dev/null 2>&1; then
+        sudo apt-get update
+        sudo apt-get install -y ansible-core
+    else
+        sudo dnf install -y ansible-core
+    fi
+fi
+
+# Only ask for the sudo password when sudo would need one
+become=()
+sudo -n true 2>/dev/null || become=(--ask-become-pass)
+
+ansible-playbook -i localhost, -c local "${become[@]}" \
+    -e {{ dict "nopasswd_sudo" .nopasswd_sudo "tiling_wm" .tiling_wm | toJson | squote }} \
+    {{ joinPath .chezmoi.workingTree "setup/linux.yml" | quote }}
+{{ end -}}

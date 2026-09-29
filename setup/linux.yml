@@ -1,6 +1,7 @@
 # Linux workstation setup: Ubuntu/Debian, Fedora, and WSL. Safe to re-run.
-# Run via install_linux.sh, or directly:
-#   ansible-playbook -i localhost, -c local -K linux.yml [-e '{"nopasswd_sudo": true}']
+# chezmoi runs this from home/.chezmoiscripts/run_onchange_before_10-packages-linux.sh.tmpl.
+# To run it directly:
+#   ansible-playbook -i localhost, -c local -K linux.yml [-e '{"nopasswd_sudo": true, "tiling_wm": "i3"}']
 - name: Set up Linux workstation
   hosts: localhost
   connection: local
@@ -13,7 +14,11 @@
     local_rtc: true # keep hardware clock in local time (dual-boot with Windows); ignored on WSL
     install_docker: "{{ not is_wsl | bool }}" # on WSL, use Docker Desktop's WSL integration instead
     install_desktop: "{{ not is_wsl | bool }}" # GNOME tweaks and extensions
+    tiling_wm: none # none, i3 or sway; ignored on WSL
+    upgrade_packages: true # upgrade everything already installed
+    neovim_version: v0.12.5 # Debian/Ubuntu only; Fedora's own package is recent enough
     common_packages:
+      - bash-completion
       - bat
       - curl
       - git
@@ -22,6 +27,7 @@
       - tmux
       - tree
       - unzip # needed by the fnm installer
+      - wl-clipboard # pbcopy/pbpaste on Wayland
       - xsel
       - zsh
     os_packages:
@@ -31,6 +37,8 @@
         - rename
         - vim
       RedHat:
+        - neovim
+        - util-linux-user # chsh
         - vim-enhanced
     desktop_packages:
       Debian:
@@ -40,6 +48,13 @@
       RedHat:
         - gnome-extensions-app
         - gnome-tweaks
+    tiling_packages:
+      i3:
+        Debian: [i3, i3lock, i3status, redshift, rxvt-unicode, suckless-tools]
+        RedHat: [dmenu, i3, i3lock, i3status, rxvt-unicode]
+      sway:
+        Debian: [foot, gammastep, i3status, sway, swayidle, swaylock, wofi]
+        RedHat: [foot, gammastep, i3status, sway, swayidle, swaylock, wofi]
     docker_packages:
       - docker-ce
       - docker-ce-cli
@@ -51,8 +66,10 @@
   tasks:
     - name: Check that this distro is supported
       ansible.builtin.assert:
-        that: ansible_os_family in ['Debian', 'RedHat']
-        fail_msg: "Unsupported OS family: {{ ansible_os_family }}"
+        that:
+          - ansible_os_family in ['Debian', 'RedHat']
+          - tiling_wm in ['none', 'i3', 'sway']
+        fail_msg: "Unsupported OS family ({{ ansible_os_family }}) or tiling_wm ({{ tiling_wm }})"
         quiet: true
 
     - name: System configuration
@@ -85,24 +102,30 @@
               changed_when: true
               when: rtc.stdout != ('yes' if local_rtc | bool else 'no')
 
-        - name: Upgrade installed packages (apt)
+        - name: Refresh apt cache
           ansible.builtin.apt:
             update_cache: true
             cache_valid_time: 3600
-            upgrade: "yes"
           when: ansible_os_family == 'Debian'
+
+        - name: Upgrade installed packages (apt)
+          ansible.builtin.apt:
+            upgrade: "yes"
+          when: ansible_os_family == 'Debian' and upgrade_packages | bool
 
         - name: Upgrade installed packages (dnf)
           ansible.builtin.package:
             name: "*"
             state: latest # noqa: package-latest
-          when: ansible_os_family == 'RedHat'
+          when: ansible_os_family == 'RedHat' and upgrade_packages | bool
 
         - name: Install packages
           ansible.builtin.package:
             name: >-
               {{ common_packages + os_packages[ansible_os_family]
-                 + (desktop_packages[ansible_os_family] if install_desktop | bool else []) }}
+                 + (desktop_packages[ansible_os_family] if install_desktop | bool else [])
+                 + (tiling_packages[tiling_wm][ansible_os_family]
+                    if tiling_wm != 'none' and not is_wsl | bool else []) }}
 
         # Docker Engine from Docker's own repo (includes the compose plugin)
         - name: Docker
@@ -174,3 +197,31 @@
       environment:
         UV_INSTALL_DIR: "{{ local_bin }}"
         UV_NO_MODIFY_PATH: "1"
+
+    # apt's neovim is too old for the lazy.nvim config; use the upstream release
+    - name: Neovim (Debian/Ubuntu)
+      when: ansible_os_family == 'Debian'
+      vars:
+        nvim_arch: "{{ {'x86_64': 'x86_64', 'aarch64': 'arm64'}[ansible_architecture] }}"
+        nvim_dir: "{{ home }}/.local/opt/nvim-{{ neovim_version }}"
+      block:
+        - name: Create Neovim directory
+          ansible.builtin.file:
+            path: "{{ nvim_dir }}"
+            state: directory
+            mode: "0755"
+
+        - name: Download and unpack Neovim {{ neovim_version }}
+          ansible.builtin.unarchive:
+            src: https://github.com/neovim/neovim/releases/download/{{ neovim_version }}/nvim-linux-{{ nvim_arch }}.tar.gz
+            remote_src: true
+            dest: "{{ nvim_dir }}"
+            extra_opts: [--strip-components=1]
+            creates: "{{ nvim_dir }}/bin/nvim"
+
+        - name: Link nvim into ~/.local/bin
+          ansible.builtin.file:
+            src: "{{ nvim_dir }}/bin/nvim"
+            dest: "{{ local_bin }}/nvim"
+            state: link
+            force: true

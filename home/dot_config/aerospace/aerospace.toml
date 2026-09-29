@@ -1,0 +1,113 @@
+# AeroSpace (i3-like tiling for macOS): https://nikitabobko.github.io/AeroSpace/guide
+# Mirrors ~/.config/i3/config: same letters, but $mod is ctrl-alt instead of Super.
+#   alt alone would take tmux's M-h/j/k/l/n/p/c/arrows bindings;
+#   cmd would take macOS's cmd-h/q/w/1..9.
+
+start-at-login = true
+
+# i3-style explicit splits (mod-h / mod-v) need AeroSpace's normalizations off
+enable-normalization-flatten-containers = false
+enable-normalization-opposite-orientation-for-nested-containers = false
+
+# i3 `workspace_layout tabbed` ≈ accordion
+default-root-container-layout = 'accordion'
+default-root-container-orientation = 'auto'
+
+accordion-padding = 30
+
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+
+[gaps]
+inner.horizontal = 0
+inner.vertical = 0
+outer.left = 0
+outer.bottom = 0
+outer.top = 0
+outer.right = 0
+
+[mode.main.binding]
+# start a terminal (i3: $mod+Return)
+ctrl-alt-enter = 'exec-and-forget open -na Terminal'
+
+# lock screen (i3: $mod+Shift+x)
+ctrl-alt-shift-x = 'exec-and-forget pmset displaysleepnow'
+
+# kill focused window
+ctrl-alt-shift-q = 'close'
+
+# change focus
+ctrl-alt-j = 'focus left'
+ctrl-alt-k = 'focus down'
+ctrl-alt-l = 'focus up'
+ctrl-alt-semicolon = 'focus right'
+ctrl-alt-left = 'focus left'
+ctrl-alt-down = 'focus down'
+ctrl-alt-up = 'focus up'
+ctrl-alt-right = 'focus right'
+
+# move focused window
+ctrl-alt-shift-j = 'move left'
+ctrl-alt-shift-k = 'move down'
+ctrl-alt-shift-l = 'move up'
+ctrl-alt-shift-semicolon = 'move right'
+ctrl-alt-shift-left = 'move left'
+ctrl-alt-shift-down = 'move down'
+ctrl-alt-shift-up = 'move up'
+ctrl-alt-shift-right = 'move right'
+
+# split in horizontal / vertical orientation
+ctrl-alt-h = 'split horizontal'
+ctrl-alt-v = 'split vertical'
+
+# fullscreen
+ctrl-alt-f = 'fullscreen'
+
+# layouts: stacking, tabbed, toggle split
+ctrl-alt-s = 'layout v_accordion'
+ctrl-alt-w = 'layout h_accordion'
+ctrl-alt-e = 'layout tiles horizontal vertical'
+
+# toggle tiling / floating
+ctrl-alt-shift-space = 'layout floating tiling'
+
+# switch to workspace
+ctrl-alt-1 = 'workspace 1'
+ctrl-alt-2 = 'workspace 2'
+ctrl-alt-3 = 'workspace 3'
+ctrl-alt-4 = 'workspace 4'
+ctrl-alt-5 = 'workspace 5'
+ctrl-alt-6 = 'workspace 6'
+ctrl-alt-7 = 'workspace 7'
+ctrl-alt-8 = 'workspace 8'
+ctrl-alt-9 = 'workspace 9'
+ctrl-alt-0 = 'workspace 10'
+
+# move focused window to workspace
+ctrl-alt-shift-1 = 'move-node-to-workspace 1'
+ctrl-alt-shift-2 = 'move-node-to-workspace 2'
+ctrl-alt-shift-3 = 'move-node-to-workspace 3'
+ctrl-alt-shift-4 = 'move-node-to-workspace 4'
+ctrl-alt-shift-5 = 'move-node-to-workspace 5'
+ctrl-alt-shift-6 = 'move-node-to-workspace 6'
+ctrl-alt-shift-7 = 'move-node-to-workspace 7'
+ctrl-alt-shift-8 = 'move-node-to-workspace 8'
+ctrl-alt-shift-9 = 'move-node-to-workspace 9'
+ctrl-alt-shift-0 = 'move-node-to-workspace 10'
+
+# reload the configuration file
+ctrl-alt-shift-c = 'reload-config'
+
+ctrl-alt-r = 'mode resize'
+
+[mode.resize.binding]
+j = 'resize width -50'
+k = 'resize height +50'
+l = 'resize height -50'
+semicolon = 'resize width +50'
+left = 'resize width -50'
+down = 'resize height +50'
+up = 'resize height -50'
+right = 'resize width +50'
+enter = 'mode main'
+esc = 'mode main'
+ctrl-alt-r = 'mode main'
