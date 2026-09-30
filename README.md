@@ -53,7 +53,7 @@ dotfiles commit -am "..." && dotfiles push
 
 - **Push over SSH:** the repo fetches over HTTPS and pushes over SSH, so add an SSH key to GitHub before pushing.
 - **macOS packages:** `HOMEBREW_BUNDLE_FILE` points at the Brewfile in the repo. Plain `brew bundle`, `brew bundle check` and `brew bundle cleanup` work from anywhere, and `brew bundle dump --force` writes straight into the repo.
-- **Machine-specific shell settings** go in `~/.config/shell/local.sh`. Both shells source it last, and it isn't tracked.
+- **Machine-specific settings** (a work laptop's proxy, extra aliases, PATH entries) go in `~/.config/shell/local.sh`, which both shells source last, and `~/.tmux.local.conf`, which tmux loads before its plugins. Neither is tracked, and both are optional.
 
 ## Layout
 
