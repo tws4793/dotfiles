@@ -1,0 +1,26 @@
+{{- if ne .login_shell "unchanged" -}}
+#!/bin/bash
+# Make {{ .login_shell }} the login shell. Re-runs if the choice changes.
+set -euo pipefail
+
+shell="$(command -v {{ .login_shell }} || true)"
+if [[ -z "$shell" ]]; then
+    echo "{{ .login_shell }} isn't installed; leaving the login shell alone." >&2
+    exit 0
+fi
+
+if [[ "$(uname -s)" == Darwin ]]; then
+    current="$(dscl . -read "/Users/$USER" UserShell | awk '{print $2}')"
+else
+    current="$(getent passwd "$USER" | cut -d: -f7)"
+fi
+[[ "$current" == "$shell" ]] && exit 0
+
+# chsh only accepts shells listed in /etc/shells (Homebrew's bash isn't by default)
+grep -qx "$shell" /etc/shells || echo "$shell" | sudo tee -a /etc/shells >/dev/null
+
+echo "Changing login shell to $shell (log out and back in to use it)"
+if ! chsh -s "$shell"; then
+    echo "chsh failed; run it yourself: chsh -s $shell" >&2
+fi
+{{ end -}}

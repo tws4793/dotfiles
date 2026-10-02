@@ -1,0 +1,2 @@
+# Login zsh. Runs after macOS's /etc/zprofile (path_helper), so our PATH order wins.
+. "$HOME/.config/shell/env.sh"

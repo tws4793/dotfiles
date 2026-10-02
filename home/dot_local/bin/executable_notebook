@@ -1,0 +1,85 @@
+#!/bin/sh
+# notebook: start JupyterLab in the current directory. Ctrl-C stops it.
+#
+#   notebook [ARGS]                      uv project (pyproject.toml here or above): the project's env
+#                                        elsewhere: a cached env with $NOTEBOOK_PACKAGES
+#   notebook --container [IMAGE] [ARGS]  a Jupyter Docker Stacks image via podman or docker;
+#                                        IMAGE is a full name or a short one like scipy, tensorflow
+#                                        or pytorch (default: scipy)
+#
+# ARGS go to JupyterLab, e.g. --no-browser. In a container, choose the port with
+# NOTEBOOK_PORT instead of --port; the engine with NOTEBOOK_ENGINE=podman|docker.
+set -eu
+
+usage() {
+    sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'
+}
+
+in_uv_project() {
+    dir=$PWD
+    while :; do
+        [ -f "$dir/pyproject.toml" ] && return 0
+        [ "$dir" = / ] && return 1
+        dir=$(dirname "$dir")
+    done
+}
+
+run_uv() {
+    if ! command -v uv >/dev/null 2>&1; then
+        echo "notebook: uv isn't installed (https://docs.astral.sh/uv/)" >&2
+        exit 1
+    fi
+    if in_uv_project; then
+        # JupyterLab runs alongside the project's dependencies, without being added to them
+        exec uv run --with jupyterlab jupyter lab "$@"
+    fi
+    with=
+    for pkg in ${NOTEBOOK_PACKAGES-numpy pandas matplotlib}; do
+        with="$with --with $pkg"
+    done
+    # shellcheck disable=SC2086 # $with is meant to split into separate arguments
+    exec uv tool run --from jupyterlab $with jupyter-lab "$@"
+}
+
+run_container() {
+    image=scipy
+    case "${1-}" in
+        "" | -*) ;;
+        *) image=$1; shift ;;
+    esac
+    case "$image" in
+        */*) ;;
+        *) image="quay.io/jupyter/$image-notebook" ;;
+    esac
+
+    engine=${NOTEBOOK_ENGINE-}
+    if [ -z "$engine" ]; then
+        if command -v podman >/dev/null 2>&1; then
+            engine=podman
+        elif command -v docker >/dev/null 2>&1; then
+            engine=docker
+        else
+            echo "notebook: neither podman nor docker is installed" >&2
+            exit 1
+        fi
+    fi
+
+    # The image's start script switches from root to NB_UID/NB_GID, so files written
+    # to the mounted directory belong to you. Rootless podman also needs keep-id so
+    # that NB_UID maps back to your host user.
+    set -- "$image" start-notebook.py "$@"
+    if [ "$engine" = podman ]; then
+        set -- --userns=keep-id "$@"
+    fi
+    exec "$engine" run --rm -it \
+        --user root -e NB_UID="$(id -u)" -e NB_GID="$(id -g)" \
+        -p "127.0.0.1:${NOTEBOOK_PORT:-8888}:8888" \
+        -v "$PWD:/home/jovyan/work" -w /home/jovyan/work \
+        "$@"
+}
+
+case "${1-}" in
+    -h | --help) usage ;;
+    --container) shift; run_container "$@" ;;
+    *) run_uv "$@" ;;
+esac

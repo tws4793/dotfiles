@@ -1,0 +1,19 @@
+# Interactive bash (Linux and WSL; macOS uses zsh only). Shared bash/zsh config lives in ~/.config/shell.
+case $- in
+    *i*) ;;
+    *) return ;;
+esac
+
+. "$HOME/.config/shell/env.sh"
+
+. "$HOME/.config/bash/options.bash"
+. "$HOME/.config/bash/completion.bash"
+. "$HOME/.config/bash/prompt.bash"
+
+. "$HOME/.config/shell/aliases.sh"
+. "$HOME/.config/shell/tools.sh"
+
+if [ -f /opt/ros/humble/setup.bash ]; then . /opt/ros/humble/setup.bash; fi
+
+# Machine-specific settings, not tracked by the dotfiles repo
+if [ -f "$HOME/.config/shell/local.sh" ]; then . "$HOME/.config/shell/local.sh"; fi

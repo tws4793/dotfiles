@@ -1,0 +1,14 @@
+# Interactive zsh. Shared bash/zsh config lives in ~/.config/shell.
+. "$HOME/.config/shell/env.sh"
+
+source "$HOME/.config/zsh/options.zsh"
+source "$HOME/.config/zsh/completion.zsh"
+source "$HOME/.config/zsh/prompt.zsh"
+
+. "$HOME/.config/shell/aliases.sh"
+. "$HOME/.config/shell/tools.sh"
+
+if [ -f /opt/ros/humble/setup.zsh ]; then source /opt/ros/humble/setup.zsh; fi
+
+# Machine-specific settings, not tracked by the dotfiles repo
+if [ -f "$HOME/.config/shell/local.sh" ]; then . "$HOME/.config/shell/local.sh"; fi

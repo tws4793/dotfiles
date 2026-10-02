@@ -1,0 +1,22 @@
+{{- /* Paths (relative to $HOME) that chezmoi should not manage on this machine. */ -}}
+{{ if ne .chezmoi.os "linux" }}
+.config/user-dirs.conf
+{{ end }}
+{{ if eq .chezmoi.os "darwin" }}
+{{- /* macOS uses zsh only */}}
+.bashrc
+.bash_profile
+.config/bash
+{{ end }}
+{{ if ne .tiling_wm "i3" }}
+.config/i3
+{{ end }}
+{{ if ne .tiling_wm "sway" }}
+.config/sway
+{{ end }}
+{{ if ne .tiling_wm "aerospace" }}
+.config/aerospace
+{{ end }}
+{{ if ne .tiling_wm "amethyst" }}
+.amethyst.yml
+{{ end }}

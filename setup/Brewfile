@@ -1,4 +1,5 @@
 brew "bat"
+brew "chezmoi"
 brew "fnm"
 brew "gh"
 brew "git"

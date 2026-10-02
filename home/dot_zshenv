@@ -1,0 +1,2 @@
+# Read by every zsh. Ubuntu's /etc/zsh/zshrc runs compinit unless this is set; ~/.config/zsh/completion.zsh runs it once, with the right fpath.
+skip_global_compinit=1
