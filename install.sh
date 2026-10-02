@@ -48,6 +48,9 @@ if [ -d "$HOME/.df" ]; then
     done
 fi
 
+# Write the dotfiles first, so a failing package script (e.g. a cask needing sudo)
+# can't leave $HOME without the files we just moved aside. Then run the scripts.
+"$chezmoi" apply --exclude=scripts
 "$chezmoi" apply
 
 # Fetch over HTTPS, push over SSH (add an SSH key to GitHub before pushing)
