@@ -5,5 +5,13 @@
 set -euo pipefail
 tpm="$HOME/.tmux/plugins/tpm"
 [[ -x "$tpm/bin/install_plugins" ]] || exit 0
+
+# tpm asks the tmux server for its config. Use a throwaway server so it reads the
+# current ~/.tmux.conf, not a running session's (which may predate tpm, or be the
+# one we're inside of, via $TMUX).
+unset TMUX
+TMUX_TMPDIR="$(mktemp -d)"
+export TMUX_TMPDIR
+trap 'tmux kill-server 2>/dev/null || true; rm -rf "$TMUX_TMPDIR"' EXIT
 "$tpm/bin/install_plugins" >/dev/null
 {{ end -}}
