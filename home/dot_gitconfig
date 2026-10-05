@@ -44,3 +44,7 @@
 
 [rebase]
     autoStash = true
+
+# Machine-specific settings (work identity, certificates), not tracked
+[include]
+    path = ~/.config/git/local
