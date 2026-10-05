@@ -84,7 +84,7 @@ chezmoi's naming: `dot_x` becomes `.x`, `executable_x` is installed as executabl
 
 ## Shells
 
-Both shells load the same pieces in the same order: `env.sh`, then shell-specific options, completion and prompt, then `aliases.sh`, `tools.sh` (fnm, uv, pm2) and `local.sh`.
+Both shells load the same pieces in the same order: `env.sh`, then shell-specific options, completion and prompt, then `aliases.sh`, `tools.sh` (fnm, uv, pm2, SDKMAN) and `local.sh`.
 
 - **Environment:** `env.sh` puts Homebrew, then `~/.local/bin` and `~/.bin`, first on `PATH`. It's safe to source repeatedly and survives macOS's `path_helper`. It picks `EDITOR` (nvim, then vim, then vi) and finds `JAVA_HOME` on macOS, Debian and Fedora.
 - **bash:** Linux and WSL only; on macOS the bash files aren't installed.

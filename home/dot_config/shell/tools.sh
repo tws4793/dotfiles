@@ -21,4 +21,10 @@ if command -v pm2 >/dev/null 2>&1; then
     . "$HOME/.config/shell/pm2.sh"
 fi
 
+# SDKMAN (Java, Maven, Gradle...); sets JAVA_HOME to its default Java. Keep it last.
+if [ -s "${SDKMAN_DIR:-$HOME/.sdkman}/bin/sdkman-init.sh" ]; then
+    export SDKMAN_DIR="${SDKMAN_DIR:-$HOME/.sdkman}"
+    . "$SDKMAN_DIR/bin/sdkman-init.sh"
+fi
+
 unset _shell
