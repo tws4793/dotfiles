@@ -14,7 +14,8 @@ if [[ "$(uname -s)" == Darwin ]]; then
 else
     current="$(getent passwd "$USER" | cut -d: -f7)"
 fi
-[[ "$current" == "$shell" ]] && exit 0
+# -ef: same file, so /bin/bash matches /usr/bin/bash where /bin links to /usr/bin
+[[ "$current" -ef "$shell" ]] && exit 0
 
 # chsh only accepts shells listed in /etc/shells (Homebrew's bash isn't by default)
 grep -qx "$shell" /etc/shells || echo "$shell" | sudo tee -a /etc/shells >/dev/null
